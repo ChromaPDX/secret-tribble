@@ -68,7 +68,11 @@ describe "Distribution" do
     expect( d2.splits ).to eq( d.splits )
   end
 
-  it "should perform the distribution calculation"
+  it "should perform the distribution calculation" do
+    d = valid_distribution
+
+    expect( d.distribute( 100 ) ).to eq( { "alice" => 50, "bob" => 25, "carol" => 25 } )
+  end
 
   # validations
   it "should not accept a split key that is not a string"

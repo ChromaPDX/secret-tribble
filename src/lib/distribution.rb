@@ -27,9 +27,16 @@ class Distribution
     end
   end
 
+
+  def distribute( amount )
+    Hash[ @splits.map { |k,v| [k, v * amount] } ]
+  end
+
+
   def file_path
     File.join( @output_dir, "#{@pool_id}.json" )
   end
+
 
   def save
     File.open( file_path, "w" ) { |f| f.write( @splits.to_json ) }
