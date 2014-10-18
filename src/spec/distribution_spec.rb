@@ -18,13 +18,6 @@ end
 
 describe "Distribution" do
 
-  before(:all) do
-    # current implementation writes out JSON files to a tmp folder.
-    # Lets make sure it exists and gets cleaned up later after(:all).
-    FileUtils.rm_rf(TMP_DIR) if Dir.exists?(TMP_DIR) 
-    FileUtils.mkdir_p TMP_DIR
-  end
-
   after(:all) do
     # clean up tmp dir
     FileUtils.rm_rf(TMP_DIR) if Dir.exists?(TMP_DIR) 
@@ -74,7 +67,7 @@ describe "Distribution" do
     expect( d.distribute( 100 ) ).to eq( { "alice" => 50, "bob" => 25, "carol" => 25 } )
   end
 
-  # validations
+  # TODO: validations
   it "should not accept a split key that is not a string"
   it "should not accept a split value that is not a float"
   it "should not accept individual splits greater then 1.0"
