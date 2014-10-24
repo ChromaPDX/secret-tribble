@@ -26,7 +26,7 @@ class PersistentQueue
 
   
   def initialize( queue_name, connection_config )
-    @name = queue_name
+    @name = "queue_" + queue_name
     
     # connect to the database
     @connection = conn = PG::Connection.open( connection_config )
