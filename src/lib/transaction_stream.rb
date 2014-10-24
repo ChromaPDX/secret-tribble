@@ -2,11 +2,15 @@ require 'faye/websocket'
 require 'eventmachine'
 require 'json'
 
+require_relative 'persistent_queue'
+
 class TransactionStream
 
   BLOCKCHAIN_INFO_WS = "wss://ws.blockchain.info/inv"
   
   def collect
+    transaction_queue = new PersistentQueue( "raw_btc_transactions", DB_CONFIG )
+    
     EM.run {
       ws = Faye::WebSocket::Client.new( BLOCKCHAIN_INFO_WS )
 
@@ -21,7 +25,7 @@ class TransactionStream
       end
 
       ws.on :message do |event|
-        puts event.data
+        transaction_queue.push( JSON.parse( event.data ) )
       end
 
       ws.on :close do |event|
