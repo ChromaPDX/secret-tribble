@@ -28,10 +28,9 @@ gem install bundler
 # install postgresql
 apt-get install -y postgresql
 
-# docker
-apt-get install docker.io -y
-ln -sf /usr/bin/docker.io /usr/local/bin/docker
-sed -i '$acomplete -F _docker docker' /etc/bash_completion.d/docker.io
+# create chroma_dev database and 'vagrant' user
+sudo -u postgres createdb chroma_dev
+sudo -u postgres createuser vagrant
 
 # clean up abandoned packages
 apt-get autoremove -y
