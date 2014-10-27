@@ -18,7 +18,7 @@ require_relative 'app'
 class PersistentQueue
 
   POLL_DELAY = 5 # seconds
-  CREATE_QUEUE_QUERY = "CREATE TABLE IF NOT EXISTS %s (id BIGSERIAL PRIMARY KEY, ts TIMESTAMP DEFAULT current_timestamp NOT NULL, msg TEXT NOT NULL)"   
+  CREATE_QUEUE_QUERY = "CREATE TABLE IF NOT EXISTS %s (id BIGSERIAL PRIMARY KEY, ts TIMESTAMP DEFAULT current_timestamp NOT NULL, msg JSON NOT NULL)"   
   POP_QUERY = "DELETE FROM %s WHERE id=(SELECT min(id) FROM %s) RETURNING *" # atomic select and delete of the oldest message
   PUSH_QUERY = "INSERT INTO %s (msg) VALUES ('%s')" # id and ts should automatically populate
   
