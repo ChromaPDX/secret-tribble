@@ -5,5 +5,5 @@ require_relative '../lib/transaction_stream'
 
 DB_CONFIG = {}
 
-stream = new TransactionStream
+stream = TransactionStream.new
 stream.collect
