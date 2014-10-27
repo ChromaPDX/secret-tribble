@@ -16,50 +16,61 @@ require 'pg'
 class PersistentQueue
 
   POLL_DELAY = 5 # seconds
-  CREATE_QUEUE_QUERY = "CREATE TABLE IF NOT EXISTS ? (id BIGSERIAL PRIMARY KEY, ts TIMESTAMP DEFAULT current_timestamp NOT NULL, msg TEXT NOT NULL)" 
+  CREATE_QUEUE_QUERY = "CREATE TABLE IF NOT EXISTS %s (id BIGSERIAL PRIMARY KEY, ts TIMESTAMP DEFAULT current_timestamp NOT NULL, msg TEXT NOT NULL)"   
+  POP_QUERY = "DELETE FROM %s WHERE id=(SELECT min(id) FROM %s) RETURNING *" # atomic select and delete of the oldest message
+  PUSH_QUERY = "INSERT INTO %s (msg) VALUES ('%s')" # id and ts should automatically populate
   
-  MESSAGES_PER_POLL = 10 # limit on number of messages to pull from the database in one shot
+  def initialize( queue_name )
   
-  POP_QUERY = "DELETE FROM ? WHERE id=min(id) RETURNING *" # atomic select and delete of the oldest message
-  PUSH_QUERY = "INSERT INTO ? (msg) VALUES (?)" # id and ts should automatically populate
-  CLEAN_QUERY = "DELETE FROM ? WHERE id IN (?)" # takes a list of ids
-
-  
-  def initialize( queue_name, connection_config )
-    @name = "queue_" + queue_name
+    @connection_config = {
+      host: ENV['CHROMA_DB_HOST'] || 'localhost',
+      port: ENV['CHROMA_DB_PORT'] || '5432',
+      dbname: ENV['CHROMA_DB_NAME'] || 'chroma_dev',
+      user: ENV['CHROMA_DB_USER'] || 'vagrant',
+      password: ENV['CHROMA_DB_PASSWORD'] || 'vagrant',
+    }.delete_if { |k,v| v.nil? || v.empty? }
     
     # connect to the database
-    @connection = conn = PG::Connection.open( connection_config )
+    @connection = PG::Connection.open( @connection_config )
 
+    @name = "queue_" + queue_name
+    @quoted_name = @connection.quote_ident(@name)
+    
+    @fail_name = @name + "_failures"
+    @quoted_fail_name = @connection.quote_ident(@name)
+   
     # create the queue if it doesn't already exist
-    @connection.exec_params( CREATE_QUEUE_QUERY, [name] )
+    @connection.exec( CREATE_QUEUE_QUERY % @quoted_name )
 
     # create the failed message queue if it doesn't already exist
-    @fail_name = @name + "_failures"
-    @connection.exec_params( CREATE_QUEUE_QUERY, [@fail_name] )
+    @connection.exec( CREATE_QUEUE_QUERY % @quoted_fail_name )
   end
 
   
   def push( data )
     # insert. Easy.
-    msg = data.to_json
-    @connection.exec_params( PUSH_QUERY, [name, msg] )
+    msg = @connection.escape_string( data.to_json )
+    @connection.exec_params( PUSH_QUERY % [@quoted_name, msg] )
   end
 
   
   # pops a message off the queue; returns 'false' if nothing comes out.
   def pop
-    res = @connection.exec_params( POP_QUERY, [name] )
+    res = @connection.exec( POP_QUERY % [@quoted_name, @quoted_name] )
 
     # bail on no results
     return false if res.ntuples == 0
 
     # deconstruct, and parse into JSON
-    {
-      id: res[0][0],
-      ts: res[0][1],
-      msg: JSON.parse( res[0][2] )
-    }
+    begin
+      {
+        id: res[0]['id'],
+        ts: res[0]['ts'],
+        msg: JSON.parse( res[0]['msg'] )
+      }
+    rescue => e
+      p res[0]
+    end
   end
   
   # pushes the message into the failure queue
