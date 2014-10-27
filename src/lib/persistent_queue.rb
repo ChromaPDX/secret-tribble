@@ -13,6 +13,8 @@
 require 'json'
 require 'pg'
 
+require_relative 'app'
+
 class PersistentQueue
 
   POLL_DELAY = 5 # seconds
@@ -21,17 +23,7 @@ class PersistentQueue
   PUSH_QUERY = "INSERT INTO %s (msg) VALUES ('%s')" # id and ts should automatically populate
   
   def initialize( queue_name )
-  
-    @connection_config = {
-      host: ENV['CHROMA_DB_HOST'] || 'localhost',
-      port: ENV['CHROMA_DB_PORT'] || '5432',
-      dbname: ENV['CHROMA_DB_NAME'] || 'chroma_dev',
-      user: ENV['CHROMA_DB_USER'] || 'vagrant',
-      password: ENV['CHROMA_DB_PASSWORD'] || 'vagrant',
-    }.delete_if { |k,v| v.nil? || v.empty? }
-    
-    # connect to the database
-    @connection = PG::Connection.open( @connection_config )
+    @connection = App.db_connection
 
     @name = "queue_" + queue_name
     @quoted_name = @connection.quote_ident(@name)
