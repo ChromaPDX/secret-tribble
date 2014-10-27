@@ -22,15 +22,6 @@ class PersistentQueue
   POP_QUERY = "DELETE FROM %s WHERE id=(SELECT min(id) FROM %s) RETURNING *" # atomic select and delete of the oldest message
   PUSH_QUERY = "INSERT INTO %s (msg) VALUES ('%s')" # id and ts should automatically populate
 
-  def self.setup!
-    conn = App.db_connection
-   
-    # create the queue if it doesn't already exist
-    conn.exec( CREATE_QUEUE_QUERY % @quoted_name )
-
-    # create the failed message queue if it doesn't already exist
-    conn.exec( CREATE_QUEUE_QUERY % @quoted_fail_name )
-  end
   
   def initialize( queue_name )
     @connection = App.db_connection
@@ -40,6 +31,12 @@ class PersistentQueue
     
     @fail_name = @name + "_failures"
     @quoted_fail_name = @connection.quote_ident(@name)
+
+    # create the queue if it doesn't already exist
+    @connection.exec( CREATE_QUEUE_QUERY % @quoted_name )
+
+    # create the failed message queue if it doesn't already exist
+    @connection.exec( CREATE_QUEUE_QUERY % @quoted_fail_name )
   end
 
   
