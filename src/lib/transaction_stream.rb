@@ -9,7 +9,7 @@ class TransactionStream
   BLOCKCHAIN_INFO_WS = "wss://ws.blockchain.info/inv"
   
   def collect
-    transaction_queue = new PersistentQueue( "raw_btc_transactions", DB_CONFIG )
+    transaction_queue = PersistentQueue.new( "raw_btc_transactions" )
     
     EM.run {
       ws = Faye::WebSocket::Client.new( BLOCKCHAIN_INFO_WS )
@@ -21,7 +21,7 @@ class TransactionStream
       ws.on :open do |event|
         p [:open]
         ws.send('{"op":"blocks_sub"}')
-        ws.send('{"op":"unconfirmed_sub"}')
+        # ws.send('{"op":"unconfirmed_sub"}')
       end
 
       ws.on :message do |event|
