@@ -57,5 +57,12 @@ module App
   def self.db
     @@db
   end
+
+  # Generates a Unique ID for records in the database.
+  # 32 characters long, from a keyspace of 62 characters.
+  def self.unique_id
+    keyspace = [ *'0'..'9', *'a'..'z', *'A'..'Z']
+    32.times.collect { keyspace.sample }.join
+  end
   
 end
