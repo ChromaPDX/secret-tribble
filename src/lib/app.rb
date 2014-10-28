@@ -31,6 +31,7 @@ module App
     
     # open a log for the current environment with daily rotation
     @@log = Logger.new( @@log_path, 'daily' )
+    @@log.level = Logger.const_get (@@config['log'] || 'DEBUG')
     
     # if we got this far ...
     true

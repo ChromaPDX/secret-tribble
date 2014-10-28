@@ -53,6 +53,4 @@ describe "App" do
     expect( File.exist?( App.log_file_path(App.env) ) ).to be true
   end
 
-  it "should have a configurable log level"
-  
 end
