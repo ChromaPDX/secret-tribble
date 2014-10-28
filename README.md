@@ -4,6 +4,10 @@ Greetings, and welcome to the ChromaCoin prototype. The current build and test s
 
 <img src="https://codeship.io/projects/f46bbfb0-4025-0132-6d50-0eb8b0f9040c/status?branch=master">
 
+## Notifications
+
+For real time notifications of code updates and build status, join the `chroma_ci` channel on Slack.
+
 ## Setup
 
 You will need a few things installed on your workstation:
