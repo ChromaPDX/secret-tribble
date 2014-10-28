@@ -84,12 +84,55 @@ describe "Distribution" do
     expect( d.distribute( 100 ) ).to eq( { "alice" => 50, "bob" => 25, "carol" => 25 } )
   end
 
-  # TODO: validations
-  it "should not accept a split key that is not a string"
-  it "should not accept a split value that is not a float"
-  it "should not accept individual splits greater then 1.0"
-  it "should not accept individual splits less than 0.0"
-  it "should not accept a sum of splits greater than 1.0"
-  it "should not accept a sum of splits less than 1.0"
+  # validations!
+  it "should not accept a split key that is not a valid id" do
+    d = Distribution.new( "derp" )
+    d.split!( 0.4523, BigDecimal.new("1.0") )
+
+    expect(d.valid?).to be false
+    expect(d.errors.include?(Distribution::BAD_ACCOUNT_ERROR)).to be true
+  end
+  
+  it "should not accept a split value that is not a BigDecimal" do
+    d = Distribution.new( "derp" )
+    d.split!( "alice", 0.3 )
+
+    expect(d.valid?).to be false
+    expect(d.errors.include?(Distribution::PCT_TYPE_ERROR)).to be true
+  end
+  
+  it "should not accept individual splits greater then 1.0" do
+    d = Distribution.new( "derp" )
+    d.split!( "alice", BigDecimal.new("1.3") )
+
+    expect(d.valid?).to be false
+    expect(d.errors.include?(Distribution::PCT_RANGE_ERROR)).to be true
+  end
+  
+  it "should not accept individual splits less than 0.0" do
+    d = Distribution.new( "derp" )
+    d.split!( "alice", BigDecimal.new("-0.4") )
+
+    expect(d.valid?).to be false
+    expect(d.errors.include?(Distribution::PCT_RANGE_ERROR)).to be true
+  end
+  
+  it "should not accept a sum of splits greater than 1.0" do
+    d = Distribution.new( "derp" )
+    d.split!( "alice", BigDecimal.new('1.0') )
+    d.split!( "bob", BigDecimal.new('0.5') )
+
+    expect(d.valid?).to be false
+    expect(d.errors.include?(Distribution::TOTAL_SPLIT_ERROR)).to be true
+  end
+  
+  it "should not accept a sum of splits less than 1.0" do
+    d = Distribution.new( "derp" )
+    d.split!( "alice", BigDecimal.new('0.3') )
+    d.split!( "bob", BigDecimal.new('0.5') )
+
+    expect(d.valid?).to be false
+    expect(d.errors.include?(Distribution::TOTAL_SPLIT_ERROR)).to be true
+  end
 
 end

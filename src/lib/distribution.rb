@@ -6,11 +6,17 @@ class Distribution
   # This is going to require some optimization I expect. The goal is to load the
   # most recent set of distributions.
   LOAD_QUERY = "SELECT * FROM DISTRIBUTIONS WHERE pool_id=? AND created_at=(SELECT max(created_at) FROM distributions WHERE pool_id=?)"
+
+  # Error strings
+  BAD_ACCOUNT_ERROR  = "Account ID is not a valid ID"
+  PCT_TYPE_ERROR     = "Split value must be a BigDecimal"
+  TOTAL_SPLIT_ERROR  = "Total value of splits must equal 1.0"
+  PCT_RANGE_ERROR  = "Split must be between 0.0 and 1.0"
   
-  def initialize( pool_id, output_dir = nil )
+  def initialize( pool_id )
     @pool_id = pool_id
     @splits = {}
-    @output_dir = output_dir
+    @errors = []
   end
   
 
@@ -62,4 +68,28 @@ class Distribution
     true
   end
 
+  def valid?
+    @errors = []
+
+    # validate individual split keys and values
+    @splits.each do |k,v|
+      @errors << BAD_ACCOUNT_ERROR unless k.is_a? String
+      @errors << PCT_TYPE_ERROR unless v.is_a? BigDecimal
+      @errors << PCT_RANGE_ERROR unless (v >= BigDecimal.new("0.0") and v <= BigDecimal.new("1.0"))
+    end
+
+    # validate that the total split is 1.0
+    total = @splits.collect { |k, v| v }.reduce :+
+    if total != BigDecimal.new("1.0")
+      @errors << TOTAL_SPLIT_ERROR
+    end
+
+    
+    @errors.empty?
+  end
+
+  def errors
+    @errors
+  end
+  
 end
