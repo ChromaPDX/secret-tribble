@@ -1,8 +1,8 @@
 require_relative "helper"
 require_relative '../lib/distribution'
 
-def valid_distribution
-  d = Distribution.new( App.unique_id )
+def valid_distribution( pool_id = App.unique_id )
+  d = Distribution.new( pool_id )
   d.split!( "alice", BigDecimal.new('0.5') )
   d.split!( "bob", BigDecimal.new('0.25') )
   d.split!( "carol", BigDecimal.new('0.25') )
@@ -62,6 +62,38 @@ describe "Distribution" do
     expect( d3.splits ).to eq( d2.splits )
   end
 
+  it "should load the most recent split before a given timestamp" do
+    pool_id = App.unique_id
+    
+    d1 = Distribution.new( pool_id )
+    d1.split!( "alice", BigDecimal.new('0.5') )
+    d1.split!( "bob", BigDecimal.new('0.25') )
+    d1.split!( "carol", BigDecimal.new('0.25') )
+    d1.save
+
+    sleep 0.1 # enough time for a new timestamp
+
+    d2 = Distribution.new( pool_id )
+    d2.split!( "alice", BigDecimal.new('0.15') )
+    d2.split!( "bob", BigDecimal.new('0.75') )
+    d2.split!( "carol", BigDecimal.new('0.10') )
+    d2.save
+
+    sleep 0.1 # enough time for a new timestamp
+    ts = Time.now
+    
+    d3 = Distribution.new( pool_id )
+    d3.split!( "alice", BigDecimal.new('0.35') )
+    d3.split!( "bob", BigDecimal.new('0.25') )
+    d3.split!( "carol", BigDecimal.new('0.40') )
+    d3.save
+    
+    d4 = Distribution.new( pool_id )
+    d4.load!( ts )
+
+    expect( d4.splits ).to eq( d2.splits )
+  end
+  
   
   it "should save and restore splits" do
     d = valid_distribution

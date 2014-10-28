@@ -5,7 +5,7 @@ class Distribution
 
   # This is going to require some optimization I expect. The goal is to load the
   # most recent set of distributions.
-  LOAD_QUERY = "SELECT * FROM DISTRIBUTIONS WHERE pool_id=? AND created_at=(SELECT max(created_at) FROM distributions WHERE pool_id=?)"
+  LOAD_QUERY = "SELECT * FROM DISTRIBUTIONS WHERE pool_id=? AND created_at=(SELECT max(created_at) FROM distributions WHERE pool_id=? AND created_at<=?)"
 
   # Error strings
   BAD_ACCOUNT_ERROR  = "Account ID is not a valid ID"
@@ -60,8 +60,8 @@ class Distribution
   end
 
 
-  def load!
-    distributions = App.db.fetch(LOAD_QUERY, @pool_id, @pool_id)
+  def load!( ts = Time.now )
+    distributions = App.db.fetch(LOAD_QUERY, @pool_id, @pool_id, ts)
     distributions.each do |d|
       @splits[ d[:account_id] ] = d[:split_pct]
     end
