@@ -2,7 +2,7 @@
 
 Greetings, and welcome to the ChromaCoin prototype. The current build and test status of the `master` branch is:
 
-<img src="https://codeship.io/projects/YOUR_PROJECT_UUID/status?branch=master">
+<img src="https://codeship.io/projects/f46bbfb0-4025-0132-6d50-0eb8b0f9040c/status?branch=master">
 
 ## Setup
 
