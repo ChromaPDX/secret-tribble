@@ -9,7 +9,8 @@ Sequel.migration do
         created_at TIMESTAMP NOT NULL
       )
     eos
-
+    add_index created_at
+    add_index pool_id
   end
 
   down do
