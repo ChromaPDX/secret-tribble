@@ -1,5 +1,8 @@
 require_relative 'lib/app'
 
+require 'rspec/core/rake_task'
+RSpec::Core::RakeTask.new(:test)
+
 namespace :db do
 
   task 'Run migrations'
