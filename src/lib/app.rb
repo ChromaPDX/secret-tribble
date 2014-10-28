@@ -20,7 +20,7 @@ module App
     @@file_config = load_file_config( @@config_path )
 
     # configs from environment override what's in the file config
-    @@config = @@file_config.merge( @@shell_config )
+    @@config = @@shell_config.merge( @@file_config )
     
     # connect, yo
     @@db = Sequel.connect( @@config["db"] )
