@@ -1,0 +1,10 @@
+{
+    "db" : {
+	"adapter" : "postgres",
+	"host" : "localhost",
+	"port" : "5432",
+	"database" : "chroma_test",
+	"user" : "vagrant",
+	"password" : "vagrant"
+    }
+}
