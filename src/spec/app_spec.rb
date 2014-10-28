@@ -38,5 +38,12 @@ describe "App" do
                                 }
                               })
   end
+
+  it "should generate unique_ids for use as keys in the database" do
+    # this is a weak test; maybe make a longer one someday?
+    sample = 1000
+    keys = sample.times.collect { App.unique_id }
+    expect( keys.uniq.count ).to eq( sample )
+  end
   
 end
