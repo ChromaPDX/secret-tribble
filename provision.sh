@@ -30,6 +30,7 @@ apt-get install -y postgresql libpq-dev
 
 # create chroma_dev database and 'vagrant' user
 sudo -H -u postgres bash -c "createdb chroma_dev"
+sudo -H -u postgres psql -c "createdb chroma_test"
 sudo -H -u postgres psql -c "create user vagrant password 'vagrant'"
 
 # clean up abandoned packages
