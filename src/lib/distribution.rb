@@ -3,19 +3,12 @@ require_relative 'app'
 
 class Distribution
 
-  CREATE_QUERY = "CREATE TABLE IF NOT EXISTS %s (id BIGSERIAL PRIMARY KEY, pool_id VARCHAR(32) NOT NULL, asset_id VARCHAR(32) NOT NULL, account_id VARCHAR(32) NOT NULL, split_pct INT NOT NULL)"
-  INSERT_QUERY = ""
-    
-  def self.setup!
-      
-  end
-    
   def initialize( pool_id, output_dir = nil )
     @pool_id = pool_id
     @splits = {}
     @output_dir = output_dir
   end
-
+  
 
   def pool_id
     @pool_id
