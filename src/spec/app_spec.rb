@@ -46,5 +46,13 @@ describe "App" do
     keys = sample.times.collect { App.unique_id }
     expect( keys.uniq.count ).to eq( sample )
   end
+
+  it "should provide a logging interface" do
+    # currently logs to the filesystem
+    App.log.info("yolo")
+    expect( File.exist?( App.log_file_path(App.env) ) ).to be true
+  end
+
+  it "should have a configurable log level"
   
 end

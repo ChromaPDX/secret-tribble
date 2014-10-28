@@ -1,6 +1,7 @@
 require 'sequel'
 require 'pg'
 require 'json'
+require 'logger'
 
 module App
   
@@ -11,6 +12,7 @@ module App
   def self.configure!( env_name )
 
     puts "Loading configuration '#{env_name}'"
+    @@env = env_name
 
     # load configs specified in the shell environment
     @@shell_config = load_shell_config
@@ -22,11 +24,20 @@ module App
     # configs from environment override what's in the file config
     @@config = @@shell_config.merge( @@file_config )
     
-    # connect, yo
+    # connect do the database, yo
     @@db = Sequel.connect( @@config["db"] )
 
+    @@log_path = log_file_path( env_name )
+    
+    # open a log for the current environment with daily rotation
+    @@log = Logger.new( @@log_path, 'daily' )
+    
     # if we got this far ...
     true
+  end
+
+  def self.log_file_path( env_name )
+    File.join( File.dirname(__FILE__), "..", "logs", "#{env_name}.log" )
   end
 
   def self.config_file_path( env_name )
@@ -58,6 +69,14 @@ module App
     @@db
   end
 
+  def self.log
+    @@log
+  end
+
+  def self.env
+    @@env
+  end
+  
   # Generates a Unique ID for records in the database.
   # 32 characters long, from a keyspace of 62 characters.
   def self.unique_id
