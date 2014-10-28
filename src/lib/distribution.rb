@@ -3,6 +3,10 @@ require_relative 'app'
 
 class Distribution
 
+  # This is going to require some optimization I expect. The goal is to load the
+  # most recent set of distributions.
+  LOAD_QUERY = "SELECT * FROM DISTRIBUTIONS WHERE pool_id=? AND created_at=(SELECT max(created_at) FROM distributions WHERE pool_id=?)"
+  
   def initialize( pool_id, output_dir = nil )
     @pool_id = pool_id
     @splits = {}
@@ -20,11 +24,11 @@ class Distribution
   end
 
 
-  def split!( key, value )
-    if value.nil? or value == 0
-      @splits.delete(key)
+  def split!( account_id, pct )
+    if pct.nil? or pct == 0
+      @splits.delete(account_id)
     else
-      @splits[key] = value
+      @splits[account_id] = pct
     end
   end
 
@@ -33,20 +37,28 @@ class Distribution
     Hash[ @splits.map { |k,v| [k, v * amount] } ]
   end
 
-
-  def file_path
-    File.join( @output_dir, "#{@pool_id}.json" )
-  end
-
-
+  
+  # save will not *update*; this is an append only table!
   def save
-    File.open( file_path, "w" ) { |f| f.write( @splits.to_json ) }
-    true
+    distributions = App.db[:distributions]
+    timestamp = Time.now # uniform created_at dates for all of the splits.
+
+    # return a list of distribution_ids for the new distributions
+    @splits.collect do |account_id, split_pct|
+      distributions.insert( distribution_id: App.unique_id,
+                            pool_id: @pool_id,
+                            account_id: account_id,
+                            split_pct: split_pct,
+                            created_at: timestamp)
+    end
   end
 
 
   def load!
-    File.open( file_path, "r" ) { |f| @splits = JSON.load(f) }
+    distributions = App.db.fetch(LOAD_QUERY, @pool_id, @pool_id)
+    distributions.each do |d|
+      @splits[ d[:account_id] ] = d[:split_pct]
+    end
     true
   end
 

@@ -1,66 +1,83 @@
-require_relative "../lib/distribution"
-require 'tmpdir'
-
-TMP_DIR = Dir.mktmpdir
-
-def random_id
-  (0...8).map { (65 + rand(26)).chr }.join
-end
+require_relative "helper"
+require_relative '../lib/distribution'
 
 def valid_distribution
-  d = Distribution.new( random_id, TMP_DIR )
-  d.split!( "alice", 0.5 )
-  d.split!( "bob", 0.25 )
-  d.split!( "carol", 0.25 )
+  d = Distribution.new( App.unique_id )
+  d.split!( "alice", BigDecimal.new('0.5') )
+  d.split!( "bob", BigDecimal.new('0.25') )
+  d.split!( "carol", BigDecimal.new('0.25') )
   
   d
 end
 
 describe "Distribution" do
 
-  after(:all) do
-    # clean up tmp dir
-    FileUtils.rm_rf(TMP_DIR) if Dir.exists?(TMP_DIR) 
-  end
-
   it "should initialize with an empty split" do
-    d = Distribution.new( random_id )
+    d = Distribution.new( App.unique_id )
     expect( d.splits ).to eq( {} )
   end
 
+  
   it "should accept splits" do
-    d = Distribution.new( random_id )
-    d.split!( "alice", 0.5 ) # alice gets 50%
-    d.split!( "bob", 0.5 ) # bob gets 50%
+    d = Distribution.new( App.unique_id )
+    d.split!( "alice", BigDecimal.new('0.5') ) # alice gets 50%
+    d.split!( "bob", BigDecimal.new('0.5') ) # bob gets 50%
 
-    expect( d.splits ).to eq( { "alice" => 0.5, "bob" => 0.5 } )
+    expect( d.splits ).to eq( { "alice" => BigDecimal.new('0.5'), "bob" => BigDecimal.new('0.5') } )
   end
 
+  
   it "should remove splits" do
     d = valid_distribution
     
     # valid removals
     d.split!( "carol", 0 )
-    expect( d.splits ).to eq( { "alice" => 0.5, "bob" => 0.25 } )
+    expect( d.splits ).to eq( { "alice" => BigDecimal.new('0.5'),
+                                "bob" => BigDecimal.new('0.25') } )
 
     d.split!( "bob", nil )
-    expect( d.splits ).to eq( { "alice" => 0.5 } )
+    expect( d.splits ).to eq( { "alice" => BigDecimal.new('0.5') } )
   end
 
+  it "should only load the most recent split for a pool" do
+    pool_id = App.unique_id
+    
+    d1 = Distribution.new( pool_id )
+    d1.split!( "alice", BigDecimal.new('0.5') )
+    d1.split!( "bob", BigDecimal.new('0.25') )
+    d1.split!( "carol", BigDecimal.new('0.25') )
+    d1.save
+
+    sleep 0.1 # enough time for a new timestamp
+    
+    d2 = Distribution.new( pool_id )
+    d2.split!( "alice", BigDecimal.new('0.15') )
+    d2.split!( "bob", BigDecimal.new('0.75') )
+    d2.split!( "carol", BigDecimal.new('0.10') )
+    d2.save
+
+    d3 = Distribution.new( pool_id )
+    d3.load!
+
+    expect( d3.splits ).to eq( d2.splits )
+  end
+
+  
   it "should save and restore splits" do
     d = valid_distribution
 
     # test save
-    expect( d.save ).to be true
+    expect( d.save.length ).to eq( d.splits.keys.length ) 
     
     # test load
-    d2 = Distribution.new( d.pool_id, TMP_DIR )
+    d2 = Distribution.new( d.pool_id )
     expect( d2.load! ).to be true
 
     # test equivalency
     expect( d2.splits ).to eq( d.splits )
   end
 
+  
   it "should perform the distribution calculation" do
     d = valid_distribution
 
