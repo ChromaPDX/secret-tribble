@@ -9,28 +9,42 @@ module App
   
   def self.configure!( env_name )
 
-    # load system wide configuration files
-    @@config_path = File.join( File.dirname(__FILE__), "..", "config", "#{env_name}.json" )
-    @@config = JSON.parse( IO.read(@@config_path) )
+    # load configs specified in the shell environment
+    @@shell_config = load_shell_config
 
-    # pull in configuration information from the shell environment.
-    default_db_config = {
-      adapter: 'postgres',
-      host: ENV['CHROMA_DB_HOST'],
-      port: ENV['CHROMA_DB_PORT'],
-      database: ENV['CHROMA_DB_NAME'],
-      user: ENV['CHROMA_DB_USER'],
-      password: ENV['CHROMA_DB_PASSWORD'],
-    }.delete_if { |k,v| v.nil? or v.empty? }
+    # load configs from environment files
+    @@config_path = config_file_path( env_name )
+    @@file_config = load_file_config( @@config_path )
 
-    # overwrite default_config with the "db" section of @@config
-    db_config = default_db_config.merge( @@config["db"] )
-
+    # configs from a file override what's in the environment
+    @@config = @@shell_config.merge( @@file_config )
+    
     # connect, yo
-    @@db = Sequel.connect( db_config )
+    @@db = Sequel.connect( @@config["db"] )
 
     # if we got this far ...
     true
+  end
+
+  def self.config_file_path( env_name )
+    File.join( File.dirname(__FILE__), "..", "config", "#{env_name}.json" )
+  end
+  
+  def self.load_file_config( path )
+    JSON.parse( IO.read(path) )
+  end
+  
+  def self.load_shell_config
+    {
+      "db" => {
+        "adapter" => 'postgres',
+        "host" => ENV['CHROMA_DB_HOST'],
+        "port" => ENV['CHROMA_DB_PORT'],
+        "database" => ENV['CHROMA_DB_NAME'],
+        "user" => ENV['CHROMA_DB_USER'],
+        "password" => ENV['CHROMA_DB_PASSWORD'],
+      }
+    }.delete_if { |k,v| v.nil? or v.empty? }
   end
   
   def self.config
