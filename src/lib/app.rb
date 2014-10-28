@@ -15,12 +15,12 @@ module App
     # load configs specified in the shell environment
     @@shell_config = load_shell_config
 
-    # load configs from environment files
+    # load configs from file
     @@config_path = config_file_path( env_name )
     @@file_config = load_file_config( @@config_path )
 
-    # configs from a file override what's in the environment
-    @@config = @@shell_config.merge( @@file_config )
+    # configs from environment override what's in the file config
+    @@config = @@file_config.merge( @@shell_config )
     
     # connect, yo
     @@db = Sequel.connect( @@config["db"] )
@@ -44,8 +44,8 @@ module App
         "host" => ENV['CHROMA_DB_HOST'],
         "port" => ENV['CHROMA_DB_PORT'],
         "database" => ENV['CHROMA_DB_NAME'],
-        "user" => ENV['CHROMA_DB_USER'],
-        "password" => ENV['CHROMA_DB_PASSWORD'],
+        "user" => (ENV['CHROMA_DB_USER'] || ENV['PG_USER']),
+        "password" => (ENV['CHROMA_DB_PASSWORD'] || ENV['PG_PASSWORD']),
       }
     }.delete_if { |k,v| v.nil? or v.empty? }
   end

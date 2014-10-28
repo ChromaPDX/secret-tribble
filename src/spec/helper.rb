@@ -2,7 +2,7 @@ require_relative '../lib/app'
 
 RSpec.configure do |cfg|
   cfg.before(:suite) do
-    App.configure! "test"
+    App.configure! (ENV['CHROMA_ENV'] || "test")
   end
 
   cfg.after(:suite) do

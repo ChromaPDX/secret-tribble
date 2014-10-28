@@ -1,0 +1,8 @@
+{
+    "db" : {
+	"adapter" : "postgres",
+	"host" : "localhost",
+	"port" : "5433", // PG 9.3 on Codeship
+	"database" : "test"
+    }
+}
