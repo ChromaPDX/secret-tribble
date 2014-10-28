@@ -6,8 +6,11 @@ module App
   
   @@config_path = false
   @@config = {}
+  @@db = false
   
   def self.configure!( env_name )
+
+    puts "Loading configuration '#{env_name}'"
 
     # load configs specified in the shell environment
     @@shell_config = load_shell_config

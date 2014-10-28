@@ -1,0 +1,20 @@
+require_relative 'lib/app'
+
+namespace :db do
+
+  task 'Run migrations'
+  task :migrate => ["db:connect"] do
+    Sequel.extension :migration
+    if ENV['VERSION']
+      Sequel::Migrator.run( App.db, "db/migrations", target: ENV['VERSION'].to_i )
+    else
+      Sequel::Migrator.run( App.db, "db/migrations" )
+    end
+  end
+
+  task :connect do
+    @env = ENV['CHROMA_ENV'] || "vagrant"
+    App.configure!( @env )
+  end
+  
+end
