@@ -68,6 +68,7 @@ class Distribution
     true
   end
 
+  
   def valid?
     @errors = []
 
@@ -83,11 +84,11 @@ class Distribution
     if total != BigDecimal.new("1.0")
       @errors << TOTAL_SPLIT_ERROR
     end
-
     
     @errors.empty?
   end
 
+  
   def errors
     @errors
   end
