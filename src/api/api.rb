@@ -13,5 +13,5 @@ get '/v1/distributions' do
   d = Distribution.new( pool_id )
   d.load!
 
-  d.splits.to_json
+  d.to_json
 end
