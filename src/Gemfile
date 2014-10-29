@@ -6,3 +6,6 @@ gem 'eventmachine'
 
 gem 'sequel'
 gem 'pg'
+
+gem 'sinatra'
+gem 'unicorn'
