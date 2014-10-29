@@ -2,7 +2,9 @@ require 'sinatra'
 require_relative '../lib/app.rb'
 require_relative '../lib/distribution.rb'
 
-App.configure! ENV['RACK_ENV']
+ENV['RACK_ENV'] = ENV['CHROMA_ENV']
+
+App.configure!
 
 get '/' do
   "hello, world! #{App.db[:distributions].count}"
