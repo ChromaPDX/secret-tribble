@@ -9,7 +9,7 @@ module App
   @@config = {}
   @@db = false
   
-  def self.configure!( env_name )
+  def self.configure!( env_name = 'vagrant' )
 
     puts "Loading configuration '#{env_name}'"
     @@env = env_name
