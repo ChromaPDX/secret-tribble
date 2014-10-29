@@ -1,13 +1,22 @@
 require_relative 'lib/app'
 
 require 'rspec/core/rake_task'
-RSpec::Core::RakeTask.new("test:lib") do |t|
-  t.pattern = "lib/spec/**/*_spec.rb"
+
+namespace :test do
+
+  desc 'Tests only lib/'
+  RSpec::Core::RakeTask.new(:lib) do |t|
+    t.pattern = "lib/spec/**/*_spec.rb"
+  end
+  
+  desc 'Runs all tests'
+  task :all => ["test:lib"]
+
 end
 
 namespace :db do
 
-  task 'Run migrations'
+  desc 'Run migrations'
   task :migrate => ["db:connect"] do
     Sequel.extension :migration
     if ENV['VERSION']
