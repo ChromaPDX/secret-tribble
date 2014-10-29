@@ -10,12 +10,11 @@ RSpec.configure do |cfg|
 
     # set up the environment
     App.configure! chroma_env
-  end
-
-  cfg.after(:suite) do
+    
     # wipe everything out of the test database
     [:distributions].each do |table|
       App.db[table].delete
     end
   end
+
 end
