@@ -1,5 +1,5 @@
 require_relative "helper"
-require_relative '../lib/distribution'
+require_relative '../distribution'
 
 def valid_distribution( pool_id = App.unique_id )
   d = Distribution.new( pool_id )

@@ -1,4 +1,4 @@
-require_relative '../lib/app'
+require_relative '../app'
 require 'fileutils'
 
 RSpec.configure do |cfg|

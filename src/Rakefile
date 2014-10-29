@@ -1,7 +1,9 @@
 require_relative 'lib/app'
 
 require 'rspec/core/rake_task'
-RSpec::Core::RakeTask.new(:test)
+RSpec::Core::RakeTask.new("test:lib") do |t|
+  t.pattern = "lib/spec/**/*_spec.rb"
+end
 
 namespace :db do
 

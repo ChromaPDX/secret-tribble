@@ -1,5 +1,5 @@
 require_relative 'helper'
-require_relative "../lib/app"
+require_relative "../app"
 
 describe "App" do
 
