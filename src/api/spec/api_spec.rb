@@ -1,4 +1,4 @@
-ENV['RACK_ENV'] = ENV['CHROMA_ENV'] = "test"
+ENV['RACK_ENV'] = "test"
 
 require_relative "../api.rb"
 require 'rspec'
