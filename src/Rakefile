@@ -8,9 +8,14 @@ namespace :test do
   RSpec::Core::RakeTask.new(:lib) do |t|
     t.pattern = "lib/spec/**/*_spec.rb"
   end
+
+  desc 'Tests only api/'
+  RSpec::Core::RakeTask.new(:api) do |t|
+    t.pattern = "api/spec/**/*_spec.rb"
+  end
   
   desc 'Runs all tests'
-  task :all => ["test:lib"]
+  task :all => ["test:lib", "test:api"]
 
 end
 

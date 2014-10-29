@@ -1,6 +1,7 @@
 source 'https://rubygems.org/'
 
 gem 'rspec' # tests, baby
+gem 'rack-test'
 gem 'faye-websocket' # websockets for listening to blockchain.info
 gem 'eventmachine'
 

@@ -2,7 +2,7 @@ require 'sinatra'
 require_relative '../lib/app.rb'
 require_relative '../lib/distribution.rb'
 
-App.configure!
+App.configure! ENV['RACK_ENV']
 
 get '/' do
   "hello, world! #{App.db[:distributions].count}"
