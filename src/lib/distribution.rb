@@ -17,6 +17,7 @@ class Distribution
     @pool_id = pool_id
     @splits = {}
     @errors = []
+    @created_at = nil
   end
   
 
@@ -27,6 +28,11 @@ class Distribution
 
   def splits
     @splits
+  end
+
+
+  def created_at
+    @created_at
   end
 
 
@@ -60,11 +66,26 @@ class Distribution
   end
 
 
+  def to_json
+    {
+      created_at: @created_at,
+      pool_id: @pool_id,
+      splits: Hash[ @splits.collect { |account_id, split_pct| [account_id, "%.4f" % split_pct] } ]
+    }
+      .delete_if { |k,v| v.nil? }
+      .to_json
+  end
+
+  
   def load!( ts = Time.now )
     distributions = App.db.fetch(LOAD_QUERY, @pool_id, @pool_id, ts)
+
     distributions.each do |d|
       @splits[ d[:account_id] ] = d[:split_pct]
     end
+    
+    @created_at = distributions.first[:created_at]
+    
     true
   end
 

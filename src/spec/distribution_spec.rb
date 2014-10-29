@@ -116,6 +116,19 @@ describe "Distribution" do
     expect( d.distribute( 100 ) ).to eq( { "alice" => 50, "bob" => 25, "carol" => 25 } )
   end
 
+  
+  it "should create a JSON representation" do
+    d = valid_distribution
+    parsed_js = JSON.parse( d.to_json )
+    expect( parsed_js['pool_id'] ).to eq(d.pool_id)
+    expect( parsed_js['created_at'] ).to eq(d.created_at)
+
+    parsed_js['splits'].each do |account_id, split_pct|
+      expect( BigDecimal.new(split_pct) ).to eq( d.splits[account_id] )
+    end
+  end
+
+  
   # validations!
   it "should not accept a split key that is not a valid id" do
     d = Distribution.new( "derp" )
