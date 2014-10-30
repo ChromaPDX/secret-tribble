@@ -30,6 +30,6 @@ post '/v1/distributions' do
     d.save
     d.to_json
   else
-    d.errors.to_json
+    { errors: d.errors }.to_json
   end
 end

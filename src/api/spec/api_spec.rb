@@ -66,7 +66,15 @@ describe 'The API' do
   end
 
   it "POST /v1/distributions should return a useful error message if it fails to create a distribution" do
+    d = valid_distribution
+    
+    # invalidate the distribution
+    d.split! "joe", BigDecimal.new("0.2")
+    expect( d.valid? ).to eq(false)
 
+    post "/v1/distributions", distribution: d.to_json
+    j = JSON.parse( last_response.body )
+    expect( j['errors'] ).to be_an(Array)
   end
   
 end
