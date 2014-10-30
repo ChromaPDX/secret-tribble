@@ -79,7 +79,8 @@ class Distribution
   
   def load!( ts = Time.now )
     distributions = App.db.fetch(LOAD_QUERY, @pool_id, @pool_id, ts)
-
+    return false if distributions.empty?
+    
     distributions.each do |d|
       @splits[ d[:account_id] ] = d[:split_pct]
     end
