@@ -43,8 +43,8 @@ describe 'The API' do
   it "GET /v1/distributions should return 404 and a useful error message when it can't find a distribution" do
     get "/v1/distributions", pool_id: App.unique_id
     expect(last_response.status).to eq(404)
+    
     j = JSON.parse(last_response.body)
-
     expect( j['error'] ).not_to be_nil
   end
 
