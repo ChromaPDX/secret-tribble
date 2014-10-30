@@ -5,6 +5,14 @@ require_relative "../api.rb"
 require 'rspec'
 require 'rack/test'
 
+def valid_distribution
+  d = Distribution.new( App.unique_id )
+  d.split!("alice", BigDecimal.new("0.5"))
+  d.split!("bob", BigDecimal.new("0.3"))
+  d.split!("carol", BigDecimal.new("0.2"))
+
+  d
+end
 
 describe 'The API' do
 
@@ -20,14 +28,10 @@ describe 'The API' do
   end
 
   it "GET /v1/distributions should retrieve a valid distribution" do
-    pool_id = App.unique_id
-    d = Distribution.new( pool_id )
-    d.split!("alice", BigDecimal.new("0.5"))
-    d.split!("bob", BigDecimal.new("0.3"))
-    d.split!("carol", BigDecimal.new("0.2"))
+    d = valid_distribution
     d.save
-
-    get "/v1/distributions", pool_id: pool_id
+    
+    get "/v1/distributions", pool_id: d.pool_id
     expect(last_response).to be_ok
 
     j = JSON.parse( last_response.body )
@@ -48,4 +52,21 @@ describe 'The API' do
     expect( j['error'] ).not_to be_nil
   end
 
+  it "POST /v1/distributions should create a distribution in the database" do
+    d = valid_distribution
+    post "/v1/distributions", distribution: d.to_json
+    expect(last_response).to be_ok
+    j_created = JSON.parse last_response.body
+
+    get "/v1/distributions", pool_id: d.pool_id
+    expect(last_response).to be_ok
+    j_retrieved = JSON.parse last_response.body
+
+    expect( j_retrieved ).to eq(j_created)
+  end
+
+  it "POST /v1/distributions should return a useful error message if it fails to create a distribution" do
+
+  end
+  
 end

@@ -27,7 +27,7 @@ post '/v1/distributions' do
   end
 
   if d.valid?
-    d.save!
+    d.save
     d.to_json
   else
     d.errors.to_json
