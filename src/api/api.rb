@@ -11,9 +11,12 @@ end
 get '/v1/distributions' do
   pool_id = params[:pool_id]
   d = Distribution.new( pool_id )
-  d.load!
-
-  d.to_json
+  if d.load!
+    d.to_json
+  else
+    status 404
+    { error: "No distribution found with pool_id #{pool_id}"}.to_json
+  end
 end
 
 post '/v1/distributions' do
