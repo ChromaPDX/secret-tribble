@@ -9,4 +9,5 @@ gem 'sequel'
 gem 'pg'
 
 gem 'sinatra'
-gem 'unicorn'
+gem 'unicorn' # for production
+gem 'shotgun' # for development
