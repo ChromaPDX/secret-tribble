@@ -22,7 +22,11 @@ post '/v1/distributions' do
   raw['splits'].each do |account_id, split_pct|
     d.split!( account_id, BigDecimal.new( split_pct ) )
   end
-  d.save!
 
-  d.to_json
+  if d.valid?
+    d.save!
+    d.to_json
+  else
+    d.errors.to_json
+  end
 end
