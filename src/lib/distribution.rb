@@ -53,7 +53,7 @@ class Distribution
   # save will not *update*; this is an append only table!
   def save
     distributions = App.db[:distributions]
-    timestamp = Time.now # uniform created_at dates for all of the splits.
+    @created_at = Time.now # uniform created_at dates for all of the splits.
 
     # return a list of distribution_ids for the new distributions
     @splits.collect do |account_id, split_pct|
@@ -61,7 +61,7 @@ class Distribution
                             pool_id: @pool_id,
                             account_id: account_id,
                             split_pct: split_pct,
-                            created_at: timestamp)
+                            created_at: @created_at)
     end
   end
 
