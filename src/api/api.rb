@@ -15,7 +15,7 @@ get '/v1/distributions' do
     d.to_json
   else
     status 404
-    { error: "No distribution found with pool_id #{pool_id}"}.to_json
+    { errors: ["No distribution found with pool_id #{pool_id}"] }.to_json
   end
 end
 

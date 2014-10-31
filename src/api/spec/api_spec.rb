@@ -49,7 +49,7 @@ describe 'The API' do
     expect(last_response.status).to eq(404)
     
     j = JSON.parse(last_response.body)
-    expect( j['error'] ).not_to be_nil
+    expect( j['errors'] ).not_to be_nil
   end
 
   it "POST /v1/distributions should create a distribution in the database" do
