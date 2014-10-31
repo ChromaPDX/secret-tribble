@@ -1,6 +1,15 @@
 require 'sinatra'
 require_relative '../lib/app.rb'
 require_relative '../lib/distribution.rb'
+require_relative './api_error.rb'
+
+# creates a documentation path for the given resource.
+# This API is self documenting!
+def doc( path )
+  get "#{path}.html" do
+    markdown path.to_sym, layout: "v1/layout".to_sym, layout_engine: :erb
+  end
+end
 
 App.configure!( ENV['CHROMA_ENV'] || 'vagrant' )
 
@@ -8,14 +17,14 @@ get '/' do
   '<img style="width: 100%; height: 100%" src="http://img4.wikia.nocookie.net/__cb20130627171445/safari-zone/images/c/c1/Soon-horse.jpg">'
 end
 
-
-# set up expected objects
-before do
+# set up expected objects for the API
+before "/v1/*.json" do
   content_type "application/json"
   @errors = APIError.new
 end
 
-get '/v1/distributions' do
+doc '/v1/distributions'
+get '/v1/distributions.json' do
   pool_id = params[:pool_id]
   d = Distribution.new( pool_id )
   if d.load!
@@ -27,7 +36,7 @@ get '/v1/distributions' do
   end
 end
 
-post '/v1/distributions' do
+post '/v1/distributions.json' do
   raw = JSON.parse( params[:distribution] )
   d = Distribution.new( raw['pool_id'] )
   raw['splits'].each do |account_id, split_pct|

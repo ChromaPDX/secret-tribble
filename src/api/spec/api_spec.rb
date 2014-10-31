@@ -31,11 +31,16 @@ describe 'The API' do
     expect(last_response).to be_ok
   end
 
-  it "GET /v1/distributions should retrieve a valid distribution" do
+  it "GET /v1/distributions.html should provide documentation" do
+    get "/v1/distributions.html"
+    expect(last_response).to be_ok
+  end
+  
+  it "GET /v1/distributions.json should retrieve a valid distribution" do
     d = valid_distribution
     d.save
     
-    get "/v1/distributions", pool_id: d.pool_id
+    get "/v1/distributions.json", pool_id: d.pool_id
     expect(last_response).to be_ok
     check_headers last_response
 
@@ -50,7 +55,7 @@ describe 'The API' do
   end
 
   it "GET /v1/distributions should return 404 and a useful error message when it can't find a distribution" do
-    get "/v1/distributions", pool_id: App.unique_id
+    get "/v1/distributions.json", pool_id: App.unique_id
     expect(last_response.status).to eq(404)
     check_headers last_response
     
@@ -58,14 +63,14 @@ describe 'The API' do
     expect( j['errors'] ).not_to be_nil
   end
 
-  it "POST /v1/distributions should create a distribution in the database" do
+  it "POST /v1/distributions.json should create a distribution in the database" do
     d = valid_distribution
-    post "/v1/distributions", distribution: d.to_json
+    post "/v1/distributions.json", distribution: d.to_json
     expect(last_response).to be_ok
     check_headers last_response
     j_created = JSON.parse last_response.body
 
-    get "/v1/distributions", pool_id: d.pool_id
+    get "/v1/distributions.json", pool_id: d.pool_id
     expect(last_response).to be_ok
     check_headers last_response
     j_retrieved = JSON.parse last_response.body
@@ -73,14 +78,14 @@ describe 'The API' do
     expect( j_retrieved ).to eq(j_created)
   end
 
-  it "POST /v1/distributions should return a useful error message if it fails to create a distribution" do
+  it "POST /v1/distributions.json should return a useful error message if it fails to create a distribution" do
     d = valid_distribution
     
     # invalidate the distribution
     d.split! "joe", BigDecimal.new("0.2")
     expect( d.valid? ).to eq(false)
 
-    post "/v1/distributions", distribution: d.to_json
+    post "/v1/distributions.json", distribution: d.to_json
     j = JSON.parse( last_response.body )
     check_headers last_response
     expect( j['errors'] ).to be_an(Array)

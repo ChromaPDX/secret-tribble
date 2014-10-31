@@ -11,3 +11,5 @@ gem 'pg'
 gem 'sinatra'
 gem 'unicorn' # for production
 gem 'shotgun' # for development
+
+gem 'redcarpet' # for documentation rendering
