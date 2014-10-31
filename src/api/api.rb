@@ -15,7 +15,9 @@ get '/v1/distributions' do
     d.to_json
   else
     status 404
-    { errors: ["No distribution found with pool_id #{pool_id}"] }.to_json
+    e = APIError.new
+    e.add("No distribution found with pool_id #{pool_id}")
+    e.to_json
   end
 end
 
@@ -30,6 +32,8 @@ post '/v1/distributions' do
     d.save
     d.to_json
   else
-    { errors: d.errors }.to_json
+    e = APIError.new
+    d.errors.each { |de| e.add( de ) }
+    e.to_json
   end
 end
