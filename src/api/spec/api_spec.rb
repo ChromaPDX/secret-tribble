@@ -14,6 +14,10 @@ def valid_distribution
   d
 end
 
+def check_headers( resp )
+  expect( resp.headers['Content-Type'] ).to eq("application/json")
+end
+
 describe 'The API' do
 
   include Rack::Test::Methods
@@ -33,6 +37,7 @@ describe 'The API' do
     
     get "/v1/distributions", pool_id: d.pool_id
     expect(last_response).to be_ok
+    check_headers last_response
 
     j = JSON.parse( last_response.body )
 
@@ -47,6 +52,7 @@ describe 'The API' do
   it "GET /v1/distributions should return 404 and a useful error message when it can't find a distribution" do
     get "/v1/distributions", pool_id: App.unique_id
     expect(last_response.status).to eq(404)
+    check_headers last_response
     
     j = JSON.parse(last_response.body)
     expect( j['errors'] ).not_to be_nil
@@ -56,10 +62,12 @@ describe 'The API' do
     d = valid_distribution
     post "/v1/distributions", distribution: d.to_json
     expect(last_response).to be_ok
+    check_headers last_response
     j_created = JSON.parse last_response.body
 
     get "/v1/distributions", pool_id: d.pool_id
     expect(last_response).to be_ok
+    check_headers last_response
     j_retrieved = JSON.parse last_response.body
 
     expect( j_retrieved ).to eq(j_created)
@@ -74,6 +82,7 @@ describe 'The API' do
 
     post "/v1/distributions", distribution: d.to_json
     j = JSON.parse( last_response.body )
+    check_headers last_response
     expect( j['errors'] ).to be_an(Array)
   end
   

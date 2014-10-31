@@ -8,6 +8,13 @@ get '/' do
   '<img style="width: 100%; height: 100%" src="http://img4.wikia.nocookie.net/__cb20130627171445/safari-zone/images/c/c1/Soon-horse.jpg">'
 end
 
+
+# set up expected objects
+before do
+  content_type "application/json"
+  @errors = APIError.new
+end
+
 get '/v1/distributions' do
   pool_id = params[:pool_id]
   d = Distribution.new( pool_id )
@@ -15,9 +22,8 @@ get '/v1/distributions' do
     d.to_json
   else
     status 404
-    e = APIError.new
-    e.add("No distribution found with pool_id #{pool_id}")
-    e.to_json
+    @errors.add("No distribution found with pool_id #{pool_id}")
+    @errors.to_json
   end
 end
 
@@ -32,8 +38,7 @@ post '/v1/distributions' do
     d.save
     d.to_json
   else
-    e = APIError.new
-    d.errors.each { |de| e.add( de ) }
-    e.to_json
+    d.errors.each { |de| @errors.add( de ) }
+    @errors.to_json
   end
 end
