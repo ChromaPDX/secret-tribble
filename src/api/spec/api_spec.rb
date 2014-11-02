@@ -36,6 +36,7 @@ describe 'The API' do
   it "GET /v1/distributions.html should provide documentation" do
     get "/v1/distributions.html"
     expect(last_response).to be_ok
+    expect(last_response.headers['Content-Type'] ).to eq("text/html;charset=utf-8")
   end
   
   it "GET /v1/distributions.json should retrieve a valid distribution" do

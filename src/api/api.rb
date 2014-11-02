@@ -26,16 +26,22 @@ end
 before do
   # all requests get processing time
   @_start_time = Time.now  
+  @errors = APIError.new
+  @out = nil
+end
+
+before("*.json") do
+  content_type "application/json"
 end
 
 after do
   add_headers
-end
-
-# set up expected objects for the API
-before "/v1/*.json" do
-  content_type "application/json"
-  @errors = APIError.new
+  
+  if @errors.empty? and !@out.nil?
+    halt @out.to_json
+  elsif !@errors.empty?
+    halt @errors.to_json
+  end
 end
 
 doc '/v1/distributions'
@@ -43,11 +49,10 @@ get '/v1/distributions.json' do
   pool_id = params[:pool_id]
   d = Distribution.new( pool_id )
   if d.load!
-    d.to_json
+    @out = d
   else
     status 404
     @errors.add("No distribution found with pool_id #{pool_id}")
-    @errors.to_json
   end
 end
 
@@ -60,9 +65,8 @@ post '/v1/distributions.json' do
 
   if d.valid?
     d.save
-    d.to_json
+    @out = d
   else
     d.errors.each { |de| @errors.add( de ) }
-    @errors.to_json
   end
 end
