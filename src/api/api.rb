@@ -1,7 +1,11 @@
 require 'sinatra'
 require_relative '../lib/app.rb'
-require_relative '../lib/distribution.rb'
 require_relative './api_error.rb'
+
+App.configure!( ENV['CHROMA_ENV'] || 'vagrant' )
+
+
+# UTILITY METHODS ------------------------------------------------------------
 
 # creates a documentation path for the given resource.
 # This API is self documenting!
@@ -11,18 +15,17 @@ def doc( path )
   end
 end
 
+# adds some universal headers for every response.
 def add_headers
   # processing time is expressed in miliseconds
   processing_time = ((Time.now - @_start_time) * 1000).to_i
   headers['Chroma-Processing-MS'] = processing_time
 end
 
-App.configure!( ENV['CHROMA_ENV'] || 'vagrant' )
 
-get '/' do
-  '<img style="width: 100%; height: 100%" src="http://img4.wikia.nocookie.net/__cb20130627171445/safari-zone/images/c/c1/Soon-horse.jpg">'
-end
+# FILTERS --------------------------------------------------------------------
 
+# sets up universally available variables
 before do
   # all requests get processing time
   @_start_time = Time.now  
@@ -30,10 +33,13 @@ before do
   @out = nil
 end
 
+# ensures all JSON end points have the correct Content-Type
 before("*.json") do
   content_type "application/json"
 end
 
+# adds headers to all requests, and handles @error and @out
+# conversions to JSON.
 after do
   add_headers
   
@@ -44,29 +50,14 @@ after do
   end
 end
 
-doc '/v1/distributions'
-get '/v1/distributions.json' do
-  pool_id = params[:pool_id]
-  d = Distribution.new( pool_id )
-  if d.load!
-    @out = d
-  else
-    status 404
-    @errors.add("No distribution found with pool_id #{pool_id}")
-  end
+
+# ROOT ---------------------------------------------------------------------
+
+get '/' do
+  '<img style="width: 100%; height: 100%" src="http://img4.wikia.nocookie.net/__cb20130627171445/safari-zone/images/c/c1/Soon-horse.jpg">'
 end
 
-post '/v1/distributions.json' do
-  raw = JSON.parse( params[:distribution] )
-  d = Distribution.new( raw['pool_id'] )
-  raw['splits'].each do |account_id, split_pct|
-    d.split!( account_id, BigDecimal.new( split_pct ) )
-  end
 
-  if d.valid?
-    d.save
-    @out = d
-  else
-    d.errors.each { |de| @errors.add( de ) }
-  end
-end
+# RESOURCES ----------------------------------------------------------------
+
+require_relative 'v1/distributions.rb'
