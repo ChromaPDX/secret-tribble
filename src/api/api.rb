@@ -19,7 +19,7 @@ end
 def add_headers
   # processing time is expressed in miliseconds
   processing_time = ((Time.now - @_start_time) * 1000).to_i
-  headers['Chroma-Processing-MS'] = processing_time
+  headers['Chroma-Processing-MS'] = processing_time.to_s
 end
 
 
