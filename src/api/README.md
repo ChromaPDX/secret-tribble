@@ -42,3 +42,7 @@ Static documentation files are found in the `views/v1/` directory.
 All requests have access to an `@errors` object (see `api_error.rb`). This will automatically be turned into JSON and returned instead of other data if any errors are present.
 
 Similarly, all requests *must* assign their non-error output objects to the `@out` variable. This will automatically have `#to_json` called on it, so it must be serializable.
+
+## Authentication
+
+The `/v1/tokens` resource provides authentication and access tokens. 
