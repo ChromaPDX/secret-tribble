@@ -14,8 +14,10 @@ def valid_distribution
   d
 end
 
+# We have several custom headers to assist with debugging
 def check_headers( resp )
   expect( resp.headers['Content-Type'] ).to eq("application/json")
+  expect( resp.headers['Chroma-Processing-MS'] ).to_not be_nil
 end
 
 describe 'The API' do

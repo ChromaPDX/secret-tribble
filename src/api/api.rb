@@ -11,10 +11,25 @@ def doc( path )
   end
 end
 
+def add_headers
+  # processing time is expressed in miliseconds
+  processing_time = ((Time.now - @_start_time) * 1000).to_i
+  headers['Chroma-Processing-MS'] = processing_time
+end
+
 App.configure!( ENV['CHROMA_ENV'] || 'vagrant' )
 
 get '/' do
   '<img style="width: 100%; height: 100%" src="http://img4.wikia.nocookie.net/__cb20130627171445/safari-zone/images/c/c1/Soon-horse.jpg">'
+end
+
+before do
+  # all requests get processing time
+  @_start_time = Time.now  
+end
+
+after do
+  add_headers
 end
 
 # set up expected objects for the API
