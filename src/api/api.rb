@@ -22,6 +22,11 @@ def add_headers
   headers['Chroma-Processing-MS'] = processing_time.to_s
 end
 
+# indicates that a particular path is not implemented; handy for work in progress.
+def not_implemented
+  @errors.add("Not implemented.")
+end
+
 
 # FILTERS --------------------------------------------------------------------
 
