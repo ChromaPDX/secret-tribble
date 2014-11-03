@@ -8,6 +8,11 @@ module App
   @@config_path = false
   @@config = {}
   @@db = false
+  @@env = nil
+
+  def self.configured?
+    !@@env.nil?
+  end
   
   def self.configure!( env_name = 'vagrant' )
 
