@@ -4,7 +4,8 @@ require 'json'
 require 'logger'
 
 module App
-  
+
+  @@db_tables = [:distributions, :tokens]
   @@config_path = false
   @@config = {}
   @@db = false
@@ -73,6 +74,10 @@ module App
   
   def self.db
     @@db
+  end
+
+  def self.db_tables
+    @@db_tables
   end
 
   def self.log

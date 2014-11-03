@@ -13,7 +13,7 @@ require_relative '../api.rb'
 RSpec.configure do |cfg|
   cfg.before(:suite) do
     # wipe everything out of the test database
-    [:distributions].each do |table|
+    App.db_tables.each do |table|
       App.db[table].delete
     end
   end
