@@ -2,7 +2,9 @@ require 'sinatra'
 require_relative '../lib/app.rb'
 require_relative './api_error.rb'
 
-App.configure!( ENV['CHROMA_ENV'] || 'vagrant' )
+ENV['CHROMA_ENV'] ||= 'vagrant'
+
+App.configure!( ENV['CHROMA_ENV'] ) unless App.configured?
 
 
 # UTILITY METHODS ------------------------------------------------------------
