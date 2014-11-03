@@ -59,7 +59,7 @@ class Token
   
   def self.get( token_id )
     raw = App.db[:tokens][token_id: token_id]
-    return false if raw.empty?
+    return false if raw.nil?
 
     rehydrate(raw)
   end
