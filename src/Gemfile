@@ -13,3 +13,4 @@ gem 'unicorn' # for production
 gem 'shotgun' # for development
 
 gem 'redcarpet' # for documentation rendering
+gem 'bcrypt'    # for password hashing
