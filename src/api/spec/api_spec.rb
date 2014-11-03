@@ -1,9 +1,4 @@
-ENV['RACK_ENV'] ||= 'test'
-ENV['CHROMA_ENV'] ||= 'test'
-
-require_relative "../api.rb"
-require 'rspec'
-require 'rack/test'
+require_relative "helper"
 
 def valid_distribution
   d = Distribution.new( App.unique_id )
