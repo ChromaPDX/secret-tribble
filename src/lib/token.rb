@@ -16,7 +16,7 @@ class Token
   end
 
   
-  def create!( account_id, metadata = nil )
+  def self.create!( account_id, metadata = nil )
     @account_id = account_id
     @metadata = metadata
     @token_id = App.unique_id
@@ -28,7 +28,8 @@ class Token
                    metadata: @metadata,
                    created_at: @created_at
                  )
-    true
+    
+    self.get( @token_id )
   end
 
   def self.all_for( account_id )

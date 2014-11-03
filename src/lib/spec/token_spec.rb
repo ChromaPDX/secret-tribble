@@ -18,8 +18,7 @@ describe "Token" do
   it "should create a new token for a given account" do
     metadata = "some string"
     
-    t = Token.new
-    t.create!( @account_id, metadata )
+    t = Token.create!( @account_id, metadata )
 
     expect( t.token_id ).to be_a(String)
     expect( t.account_id ).to eq(@account_id)
@@ -40,8 +39,7 @@ describe "Token" do
 
   
   it "should retrieve a token given a token_id" do
-    t = Token.new
-    t.create!( @account_id )
+    t = Token.create!( @account_id )
 
     t2 = Token.get( t.token_id )
     expect( t2.token_id ).to eq( t.token_id )
