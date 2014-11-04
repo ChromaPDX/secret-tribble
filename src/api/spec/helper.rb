@@ -40,3 +40,13 @@ def valid_pool
 
   d
 end
+
+def setup_credentials
+  @secret_key = App.unique_id
+  @account = Account.create! "test account"
+  @account_id = @account.account_id
+  @account.set_secret_key( @secret_key )
+  @metadata = "example token"
+  @token = Token.create!( @account_id, @metadata )
+  @token_id = @token.token_id
+end

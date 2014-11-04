@@ -8,6 +8,10 @@ describe '/v1/pools' do
     Sinatra::Application
   end
 
+  before(:all) do
+    setup_credentials
+  end
+  
   it "GET /v1/pools.html should provide documentation" do
     get "/v1/pools.html"
     expect(last_response).to be_ok
@@ -18,7 +22,7 @@ describe '/v1/pools' do
     d = valid_pool
     d.save
     
-    get "/v1/pools.json", pool_id: d.pool_id
+    get "/v1/pools.json", pool_id: d.pool_id, token_id: @token_id
     expect(last_response).to be_ok
     check_headers last_response
 
@@ -33,7 +37,7 @@ describe '/v1/pools' do
   end
 
   it "GET should return 404 and a useful error message when it can't find a pool" do
-    get "/v1/pools.json", pool_id: App.unique_id
+    get "/v1/pools.json", pool_id: App.unique_id, token_id: @token_id
     expect(last_response.status).to eq(404)
     check_headers last_response
     
@@ -43,12 +47,12 @@ describe '/v1/pools' do
 
   it "POST should create a pool in the database" do
     d = valid_pool
-    post "/v1/pools.json", pool: d.to_json
+    post "/v1/pools.json", pool: d.to_json, token_id: @token_id
     expect(last_response).to be_ok
     check_headers last_response
     j_created = JSON.parse last_response.body
 
-    get "/v1/pools.json", pool_id: d.pool_id
+    get "/v1/pools.json", pool_id: d.pool_id, token_id: @token_id
     expect(last_response).to be_ok
     check_headers last_response
     j_retrieved = JSON.parse last_response.body
@@ -63,7 +67,7 @@ describe '/v1/pools' do
     d.split! "joe", BigDecimal.new("0.2")
     expect( d.valid? ).to eq(false)
 
-    post "/v1/pools.json", pool: d.to_json
+    post "/v1/pools.json", pool: d.to_json, token_id: @token_id
     j = JSON.parse( last_response.body )
     check_headers last_response
     expect( j['errors'] ).to be_an(Array)

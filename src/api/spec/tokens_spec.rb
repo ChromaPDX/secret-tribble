@@ -9,13 +9,7 @@ describe '/v1/tokens' do
   end
   
   before(:all) do
-    @secret_key = App.unique_id
-    @account = Account.create!("test account")
-    @account_id = @account.account_id
-    @account.set_secret_key( @secret_key )
-
-    @metadata = "example_token"
-    @token = Token.create!( @account_id, @metadata )
+    setup_credentials
   end
   
   
