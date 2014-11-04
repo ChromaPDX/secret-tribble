@@ -18,6 +18,14 @@ class Account
   end
 
   
+  def to_json
+    {
+      account_id: @account_id,
+      name: @name
+    }.to_json
+  end
+
+  
   def self.create!( name )
     @account_id = App.unique_id
     @name = name
