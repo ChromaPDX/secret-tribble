@@ -7,7 +7,7 @@
 
 ### Returns
 
-If the `pool_id` is correct, a `distribution` will be returned:
+If the `pool_id` is correct, a `pool` will be returned:
 
 	{
 	    "pool_id" : ...,
@@ -26,7 +26,7 @@ If the `pool_id` is correct, a `distribution` will be returned:
 Any errors are returned in a standard error object (TODO), with the following HTTP statuses.
 
 <table class="errors">
-<tr><td class="code">404</td><td class="reason">Distribution not found.</td></tr>
+<tr><td class="code">404</td><td class="reason">Pool not found.</td></tr>
 </table>
 
-## POST /v1/distributions.json
+## POST /v1/pools.json

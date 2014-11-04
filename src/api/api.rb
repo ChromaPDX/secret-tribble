@@ -67,5 +67,5 @@ end
 
 # RESOURCES ----------------------------------------------------------------
 
-require_relative 'v1/distributions.rb'
+require_relative 'v1/pools.rb'
 require_relative 'v1/tokens.rb'

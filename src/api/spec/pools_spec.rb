@@ -1,6 +1,6 @@
 require_relative "helper"
 
-describe '/v1/distributions' do
+describe '/v1/pools' do
 
   include Rack::Test::Methods
 
@@ -8,17 +8,17 @@ describe '/v1/distributions' do
     Sinatra::Application
   end
 
-  it "GET /v1/distributions.html should provide documentation" do
-    get "/v1/distributions.html"
+  it "GET /v1/pools.html should provide documentation" do
+    get "/v1/pools.html"
     expect(last_response).to be_ok
     expect(last_response.headers['Content-Type'] ).to eq("text/html;charset=utf-8")
   end
   
-  it "GET should retrieve a valid distribution" do
-    d = valid_distribution
+  it "GET should retrieve a valid pool" do
+    d = valid_pool
     d.save
     
-    get "/v1/distributions.json", pool_id: d.pool_id
+    get "/v1/pools.json", pool_id: d.pool_id
     expect(last_response).to be_ok
     check_headers last_response
 
@@ -32,8 +32,8 @@ describe '/v1/distributions' do
     end
   end
 
-  it "GET should return 404 and a useful error message when it can't find a distribution" do
-    get "/v1/distributions.json", pool_id: App.unique_id
+  it "GET should return 404 and a useful error message when it can't find a pool" do
+    get "/v1/pools.json", pool_id: App.unique_id
     expect(last_response.status).to eq(404)
     check_headers last_response
     
@@ -41,14 +41,14 @@ describe '/v1/distributions' do
     expect( j['errors'] ).not_to be_nil
   end
 
-  it "POST should create a distribution in the database" do
-    d = valid_distribution
-    post "/v1/distributions.json", distribution: d.to_json
+  it "POST should create a pool in the database" do
+    d = valid_pool
+    post "/v1/pools.json", pool: d.to_json
     expect(last_response).to be_ok
     check_headers last_response
     j_created = JSON.parse last_response.body
 
-    get "/v1/distributions.json", pool_id: d.pool_id
+    get "/v1/pools.json", pool_id: d.pool_id
     expect(last_response).to be_ok
     check_headers last_response
     j_retrieved = JSON.parse last_response.body
@@ -56,14 +56,14 @@ describe '/v1/distributions' do
     expect( j_retrieved ).to eq(j_created)
   end
 
-  it "POST should return a useful error message if it fails to create a distribution" do
-    d = valid_distribution
+  it "POST should return a useful error message if it fails to create a pool" do
+    d = valid_pool
     
-    # invalidate the distribution
+    # invalidate the pool
     d.split! "joe", BigDecimal.new("0.2")
     expect( d.valid? ).to eq(false)
 
-    post "/v1/distributions.json", distribution: d.to_json
+    post "/v1/pools.json", pool: d.to_json
     j = JSON.parse( last_response.body )
     check_headers last_response
     expect( j['errors'] ).to be_an(Array)

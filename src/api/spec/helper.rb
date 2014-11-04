@@ -10,7 +10,7 @@ App.configure!( ENV['CHROMA_ENV'] )
 
 require_relative '../api.rb'
 
-require_relative '../../lib/distribution.rb'
+require_relative '../../lib/pool.rb'
 require_relative '../../lib/token.rb'
 require_relative '../../lib/account.rb'
 
@@ -32,8 +32,8 @@ def check_headers( resp )
 end
 
 
-def valid_distribution
-  d = Distribution.new( App.unique_id )
+def valid_pool
+  d = Pool.new( App.unique_id )
   d.split!("alice", BigDecimal.new("0.5"))
   d.split!("bob", BigDecimal.new("0.3"))
   d.split!("carol", BigDecimal.new("0.2"))

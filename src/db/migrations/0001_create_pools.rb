@@ -1,8 +1,7 @@
 Sequel.migration do
   up do
     App.db.run <<-eos
-      CREATE TABLE distributions (
-        distribution_id VARCHAR(32) PRIMARY KEY,
+      CREATE TABLE pools (
         pool_id VARCHAR(32) NOT NULL,
         account_id VARCHAR(32) NOT NULL,
         split_pct DECIMAL(5,4) NOT NULL,
@@ -10,12 +9,12 @@ Sequel.migration do
       )
     eos
     
-    add_index :distributions, :created_at
-    add_index :distributions, :pool_id
-    add_index :distributions, :account_id
+    add_index :pools, :created_at
+    add_index :pools, :pool_id
+    add_index :pools, :account_id
   end
 
   down do
-    drop_table :distributions
+    drop_table :pools
   end
 end

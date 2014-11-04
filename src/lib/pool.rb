@@ -1,11 +1,11 @@
 require 'json'
 require_relative 'app'
 
-class Distribution
+class Pool
 
   # This is going to require some optimization I expect. The goal is to load the
-  # most recent set of distributions.
-  LOAD_QUERY = "SELECT * FROM DISTRIBUTIONS WHERE pool_id=? AND created_at=(SELECT max(created_at) FROM distributions WHERE pool_id=? AND created_at<=?)"
+  # most recent pool definition.
+  LOAD_QUERY = "SELECT * FROM pools WHERE pool_id=? AND created_at=(SELECT max(created_at) FROM pools WHERE pool_id=? AND created_at<=?)"
 
   # Error strings
   BAD_ACCOUNT_ERROR  = "Account ID is not a valid ID"
@@ -52,16 +52,15 @@ class Distribution
   
   # save will not *update*; this is an append only table!
   def save
-    distributions = App.db[:distributions]
+    pools = App.db[:pools]
     @created_at = Time.now # uniform created_at dates for all of the splits.
 
-    # return a list of distribution_ids for the new distributions
+    # return a list of pool_ids for the new pools
     @splits.collect do |account_id, split_pct|
-      distributions.insert( distribution_id: App.unique_id,
-                            pool_id: @pool_id,
-                            account_id: account_id,
-                            split_pct: split_pct,
-                            created_at: @created_at)
+      pools.insert( pool_id: @pool_id,
+                    account_id: account_id,
+                    split_pct: split_pct,
+                    created_at: @created_at)
     end
   end
 
@@ -78,14 +77,14 @@ class Distribution
 
   
   def load!( ts = Time.now )
-    distributions = App.db.fetch(LOAD_QUERY, @pool_id, @pool_id, ts)
-    return false if distributions.empty?
+    pools = App.db.fetch(LOAD_QUERY, @pool_id, @pool_id, ts)
+    return false if pools.empty?
     
-    distributions.each do |d|
+    pools.each do |d|
       @splits[ d[:account_id] ] = d[:split_pct]
     end
     
-    @created_at = distributions.first[:created_at]
+    @created_at = pools.first[:created_at]
     
     true
   end
