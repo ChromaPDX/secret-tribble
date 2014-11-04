@@ -26,9 +26,10 @@ end
 # HELPER METHODS -------------------------------------------------------------
 
 # We have several custom headers to assist with debugging
-def check_headers( resp )
+def check_headers( resp, status = 200 )
   expect( resp.headers['Content-Type'] ).to eq("application/json")
   expect( resp.headers['Chroma-Processing-MS'] ).to_not be_nil
+  expect( resp.status ).to eq(status)
 end
 
 

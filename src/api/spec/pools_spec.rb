@@ -23,7 +23,6 @@ describe '/v1/pools' do
     d.save
     
     get "/v1/pools.json", pool_id: d.pool_id, token_id: @token_id
-    expect(last_response).to be_ok
     check_headers last_response
 
     j = JSON.parse( last_response.body )
@@ -38,8 +37,7 @@ describe '/v1/pools' do
 
   it "GET should return 404 and a useful error message when it can't find a pool" do
     get "/v1/pools.json", pool_id: App.unique_id, token_id: @token_id
-    expect(last_response.status).to eq(404)
-    check_headers last_response
+    check_headers last_response, 404
     
     j = JSON.parse(last_response.body)
     expect( j['errors'] ).not_to be_nil
@@ -48,12 +46,10 @@ describe '/v1/pools' do
   it "POST should create a pool in the database" do
     d = valid_pool
     post "/v1/pools.json", pool: d.to_json, token_id: @token_id
-    expect(last_response).to be_ok
     check_headers last_response
     j_created = JSON.parse last_response.body
 
     get "/v1/pools.json", pool_id: d.pool_id, token_id: @token_id
-    expect(last_response).to be_ok
     check_headers last_response
     j_retrieved = JSON.parse last_response.body
 
