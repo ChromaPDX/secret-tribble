@@ -25,6 +25,7 @@ end
 
 # HELPER METHODS -------------------------------------------------------------
 
+
 # We have several custom headers to assist with debugging
 def check_headers( resp, status = 200 )
   expect( resp.headers['Content-Type'] ).to eq("application/json")
@@ -32,7 +33,8 @@ def check_headers( resp, status = 200 )
   expect( resp.status ).to eq(status)
 end
 
-# Checks the expected error object
+
+# Checks an expected error object
 def check_errors( resp, error_string = false )
   j = JSON.parse( resp.body )
   expect(j['errors']).to be_an(Array)
