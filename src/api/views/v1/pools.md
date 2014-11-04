@@ -1,32 +1,54 @@
-## GET /v1/distributions.json
+# /v1/pools.json
 
-### Parameters
-<table class="parameters">
-<tr><td class="param">pool_id</td><td class="value">A valid pool ID</td></tr>
-</table>
+Pools represent how royalties are split and distributed amongst contributors.
 
-### Returns
+## GET
+
+| Param    | Description      |
+| -----    | -----------      |
+| token_id | A valid token_id |
+| pool_id  | A valid pool_id  |
 
 If the `pool_id` is correct, a `pool` will be returned:
 
-	{
-	    "pool_id" : ...,
-	    "created_at" : timestamp,
-		"splits" : {
-			account_id : split_percent,
-			...
-		}
-    }	
+### Response
+
+```javascript
+{
+	"pool_id" : ...,
+	"created_at" : timestamp,
+	"splits" : {
+		account_id : split_percent,
+		...
+	}
+}
+```
 
 - `timestamp` will be an ISO 8601 date and time value, based in UTC +0.
-- `split_percent` will be a string representation of a floating point value between 0.0 and 1.0. The sum of the `split_percent` values will *always* equal 1.0.
+- `split_percent` will be a string representation of a floating point value between 0.0 and 1.0. The sum of the `split_percent` values must *always* equal 1.0.
 
-### Errors
+| Status | Description          |
+| ------ | -----------          |
+| 200    | Pool found.          |
+| 401    | Invalid credentials. |
+| 404    | Pool not found.      |
 
-Any errors are returned in a standard error object (TODO), with the following HTTP statuses.
+## POST
 
-<table class="errors">
-<tr><td class="code">404</td><td class="reason">Pool not found.</td></tr>
-</table>
+| Param    | Description                 |
+| -----    | -----------                 |
+| token_id | A valid token_id            |
+| pool     | A valid, JSON encoded pool  |
 
-## POST /v1/pools.json
+See `GET` above for a description of the JSON structure for the `pool` parameter.
+
+### Response
+
+A successful response will contain a JSON pool representation for you to verify.
+
+| Status | Description          |
+| ------ | -----------          |
+| 200    | Pool created.        |
+| 401    | Invalid credentials. |
+
+

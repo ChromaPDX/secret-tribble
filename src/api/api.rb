@@ -1,4 +1,5 @@
 require 'sinatra'
+require 'github/markup'
 require_relative '../lib/app.rb'
 require_relative './api_error.rb'
 
@@ -6,14 +7,17 @@ ENV['CHROMA_ENV'] ||= 'vagrant'
 
 App.configure!( ENV['CHROMA_ENV'] ) unless App.configured?
 
-
 # UTILITY METHODS ------------------------------------------------------------
 
 # creates a documentation path for the given resource.
 # This API is self documenting!
 def doc( path )
   get "#{path}.html" do
-    markdown path.to_sym, layout: "v1/layout".to_sym, layout_engine: :erb
+    template_path = File.join( File.dirname(__FILE__), 'views', "#{path}.md" )
+    rendered = GitHub::Markup.render( template_path )
+    
+    erb "v1/layout".to_sym, :locals => { :content => rendered }
+    # markdown path.to_sym, layout: "v1/layout".to_sym, layout_engine: :erb
   end
 end
 
@@ -106,6 +110,8 @@ end
 
 
 # RESOURCES ----------------------------------------------------------------
+
+doc "/v1/index"
 
 require_relative 'v1/pools.rb'
 require_relative 'v1/tokens.rb'
