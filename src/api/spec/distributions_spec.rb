@@ -14,7 +14,7 @@ describe '/v1/distributions' do
     expect(last_response.headers['Content-Type'] ).to eq("text/html;charset=utf-8")
   end
   
-  it "GET /v1/distributions.json should retrieve a valid distribution" do
+  it "GET should retrieve a valid distribution" do
     d = valid_distribution
     d.save
     
@@ -32,7 +32,7 @@ describe '/v1/distributions' do
     end
   end
 
-  it "GET /v1/distributions should return 404 and a useful error message when it can't find a distribution" do
+  it "GET should return 404 and a useful error message when it can't find a distribution" do
     get "/v1/distributions.json", pool_id: App.unique_id
     expect(last_response.status).to eq(404)
     check_headers last_response
@@ -41,7 +41,7 @@ describe '/v1/distributions' do
     expect( j['errors'] ).not_to be_nil
   end
 
-  it "POST /v1/distributions.json should create a distribution in the database" do
+  it "POST should create a distribution in the database" do
     d = valid_distribution
     post "/v1/distributions.json", distribution: d.to_json
     expect(last_response).to be_ok
@@ -56,7 +56,7 @@ describe '/v1/distributions' do
     expect( j_retrieved ).to eq(j_created)
   end
 
-  it "POST /v1/distributions.json should return a useful error message if it fails to create a distribution" do
+  it "POST should return a useful error message if it fails to create a distribution" do
     d = valid_distribution
     
     # invalidate the distribution
