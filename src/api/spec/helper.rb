@@ -12,6 +12,7 @@ require_relative '../api.rb'
 
 require_relative '../../lib/distribution.rb'
 require_relative '../../lib/token.rb'
+require_relative '../../lib/account.rb'
 
 RSpec.configure do |cfg|
   cfg.before(:suite) do
