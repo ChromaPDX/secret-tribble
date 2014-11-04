@@ -32,6 +32,7 @@ class Token
     self.get( @token_id )
   end
 
+  
   def self.all_for( account_id )
     raw_tokens = App.db[:tokens].filter( account_id: account_id )
     raw_tokens.collect { |rt| rehydrate( rt ) }
@@ -62,6 +63,10 @@ class Token
     return false if raw.nil?
 
     rehydrate(raw)
+  end
+
+  def delete!
+    App.db[:tokens].where(token_id: @token_id).delete
   end
 
   

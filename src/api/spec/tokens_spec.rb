@@ -50,47 +50,47 @@ describe '/v1/tokens' do
     j["tokens"].each do |t|
       expect(t["account_id"]).to eq(@account_id)
     end
+    check_headers(last_response)
 
     # failure case: bad account_id
     get "/v1/tokens.json", account_id: "asfasf", secret_key: @secret_key
     expect(last_response.status).to eq(401) # Not Authenticated
     j = JSON.parse(last_response.body)
     expect(j['errors']).to be_an(Array)
+    check_headers(last_response)
     
     # failure case: missing account_id and secret_key
     get "/v1/tokens.json"
     expect(last_response.status).to eq(401) # Not Authenticated
     j = JSON.parse(last_response.body)
     expect(j['errors']).to be_an(Array)
+    check_headers(last_response)
   end
 
   
-  it "DELETE given correct credentials, should delete a token"
+  it "DELETE given correct credentials, should delete a token" do
+    t1 = Token.create!( @account_id, "delete me" )
+    t2 = Token.get( t1.token_id )
+    expect( t2 ).to_not be false
+
+    delete "/v1/tokens.json", account_id: @account_id, secret_key: @secret_key, token_id: t1.token_id
+    expect(last_response).to be_ok
+    check_headers(last_response)
+
+    t2 = Token.get( t1.token_id )
+    expect( t2 ).to be false
+  end
   
-  it "GET should verify that a token is active" do
+  it "HEAD should verify that a token is active" do
     # success
-    get "/v1/tokens.json", token_id: @token.token_id
+    head "/v1/tokens.json", token_id: @token.token_id
     expect(last_response).to be_ok
     check_headers(last_response)
 
     # failure
-    get "/v1/tokens.json", token_id: App.unique_id
+    head "/v1/tokens.json", token_id: App.unique_id
     expect(last_response.status).to eq(401)
-    j = JSON.parse(last_response.body)
-    expect( j['errors'].empty? ).to be false
-  end
-
-  
-  it "GET should verify that all of the token data is available" do
-    get "/v1/tokens.json", token_id: @token.token_id
-    expect(last_response).to be_ok
     check_headers(last_response)
-
-    j = JSON.parse(last_response.body)
-    expect( j['token_id'] ).to eq( @token.token_id )
-    expect( j['created_at'].to_s ).to eq( @token.created_at.to_s )
-    expect( j['metadata'] ).to eq( @token.metadata )
-    expect( j['account_id'] ).to eq( @token.account_id )
   end
-  
+
 end
