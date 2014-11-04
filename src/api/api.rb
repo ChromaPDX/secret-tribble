@@ -113,5 +113,7 @@ end
 
 doc "/v1/index"
 
+require_relative 'v1/accounts.rb'
+require_relative 'v1/credentials.rb'
 require_relative 'v1/pools.rb'
 require_relative 'v1/tokens.rb'
