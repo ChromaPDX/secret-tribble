@@ -2,7 +2,13 @@ require_relative '../../lib/pool.rb'
 
 doc '/v1/pools'
 get '/v1/pools.json' do
+  unless require_token!
+    invalid_credentials!
+    return
+  end
+  
   pool_id = params[:pool_id]
+
   d = Pool.new( pool_id )
   if d.load!
     @out = d
@@ -13,6 +19,11 @@ get '/v1/pools.json' do
 end
 
 post '/v1/pools.json' do
+  unless require_token!
+    invalid_credentials!
+    return
+  end
+  
   raw = JSON.parse( params[:pool] )
   d = Pool.new( raw['pool_id'] )
   raw['splits'].each do |account_id, split_pct|
