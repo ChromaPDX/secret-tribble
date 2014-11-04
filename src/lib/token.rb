@@ -38,7 +38,7 @@ class Token
   end
   
   
-  def to_json
+  def to_json( opt = nil )
     {
       token_id: @token_id,
       account_id: @account_id,
