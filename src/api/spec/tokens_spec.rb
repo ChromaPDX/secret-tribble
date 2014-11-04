@@ -25,14 +25,12 @@ describe '/v1/tokens' do
     # failure case: bad account_id
     post "/v1/tokens.json", account_id: "asfasf", secret_key: @secret_key
     check_headers last_response, 401
-    j = JSON.parse(last_response.body)
-    expect(j['errors']).to be_an(Array)
+    check_errors last_response
     
     # failure case: missing account_id and secret_key
     post "/v1/tokens.json"
     check_headers last_response, 401
-     j = JSON.parse(last_response.body)
-    expect(j['errors']).to be_an(Array)
+    check_errors last_response
   end
 
   
@@ -45,19 +43,17 @@ describe '/v1/tokens' do
     j["tokens"].each do |t|
       expect(t["account_id"]).to eq(@account_id)
     end
-    check_headers(last_response)
 
     # failure case: bad account_id
     get "/v1/tokens.json", account_id: "asfasf", secret_key: @secret_key
     check_headers last_response, 401
-    j = JSON.parse(last_response.body)
-    expect(j['errors']).to be_an(Array)
+    check_errors last_response
     
     # failure case: missing account_id and secret_key
     get "/v1/tokens.json"
     check_headers last_response, 401
-    j = JSON.parse(last_response.body)
-    expect(j['errors']).to be_an(Array)
+    check_errors last_response
+    
   end
 
   
@@ -72,6 +68,7 @@ describe '/v1/tokens' do
     t2 = Token.get( t1.token_id )
     expect( t2 ).to be false
   end
+
   
   it "HEAD should verify that a token is active" do
     # success

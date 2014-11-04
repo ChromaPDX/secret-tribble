@@ -32,6 +32,16 @@ def check_headers( resp, status = 200 )
   expect( resp.status ).to eq(status)
 end
 
+# Checks the expected error object
+def check_errors( resp, error_string = false )
+  j = JSON.parse( resp.body )
+  expect(j['errors']).to be_an(Array)
+  
+  if error_string
+    expect(j['errors'].include?( error_string )).to be(true)
+  end
+end
+
 
 def valid_pool
   d = Pool.new( App.unique_id )
@@ -42,6 +52,8 @@ def valid_pool
   d
 end
 
+
+# creates the environment needed to authenticate requests
 def setup_credentials
   @secret_key = App.unique_id
   @account = Account.create! "test account"
