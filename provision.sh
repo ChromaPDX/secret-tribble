@@ -33,6 +33,9 @@ sudo -H -u postgres bash -c "createdb chroma_dev"
 sudo -H -u postgres psql -c "createdb chroma_test"
 sudo -H -u postgres psql -c "create user vagrant password 'vagrant'"
 
+# git
+apt-get install -y git
+
 # clean up abandoned packages
 apt-get autoremove -y
 

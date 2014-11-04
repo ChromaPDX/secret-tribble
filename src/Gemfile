@@ -12,5 +12,6 @@ gem 'sinatra'
 gem 'unicorn' # for production
 gem 'shotgun' # for development
 
-gem 'redcarpet' # for documentation rendering
+gem 'github-markdown'
+gem 'github-markup', git: 'https://github.com/github/markup.git'
 gem 'bcrypt'    # for password hashing
