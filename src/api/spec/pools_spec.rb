@@ -25,7 +25,7 @@ describe '/v1/pools' do
     d.save
     
     get "/v1/pools.json", pool_id: d.pool_id, token_id: @token_id
-    check_headers last_response
+    check_headers
     j = JSON.parse( last_response.body )
 
     # data integrity check

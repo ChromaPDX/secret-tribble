@@ -29,9 +29,9 @@ end
 # We have several custom headers to assist with debugging
 def check_headers( resp = nil, status = 200 )
   resp ||= last_response
+  expect( resp.status ).to eq(status)
   expect( resp.headers['Content-Type'] ).to eq("application/json")
   expect( resp.headers['Chroma-Processing-MS'] ).to_not be_nil
-  expect( resp.status ).to eq(status)
 end
 
 

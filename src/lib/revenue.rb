@@ -18,7 +18,7 @@ class Revenue
   end
 
   
-  def to_json
+  def to_json( opts = {} )
     {
       revenue_id: @revenue_id,
       pool_id: @pool_id,
@@ -27,7 +27,7 @@ class Revenue
       created_at: @created_at
     }
       .delete_if { |k,v| v.nil? }
-      .to_json
+      .to_json( opts )
   end
 
   
@@ -61,6 +61,11 @@ class Revenue
     end
     
     false
+  end
+
+  def self.with_pool_id( pool_id )
+    results = App.db[:revenue].where(pool_id: pool_id)
+    results.collect { |r| rehydrate(r) }
   end
 
 

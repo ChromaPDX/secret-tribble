@@ -30,6 +30,32 @@ describe Revenue do
     expect(r2.created_at.to_s).to eq(r.created_at.to_s)
   end
 
+  it "should retrieve all revenue for a given pool" do
+    pool_id = App.unique_id
+    r1 = Revenue.new( pool_id: pool_id,
+                      amount: BigDecimal.new( "12.3" ),
+                      currency: Revenue::BTC )
+    r1.create!
+
+    r2 = Revenue.new( pool_id: pool_id,
+                      amount: BigDecimal.new( "45.6" ),
+                      currency: Revenue::BTC )
+    r2.create!
+
+    r3 = Revenue.new( pool_id: pool_id,
+                      amount: BigDecimal.new( "78.9" ),
+                      currency: Revenue::BTC )
+    r3.create!
+
+    rs = Revenue.with_pool_id( pool_id )
+    expect( rs ).to be_an(Array)
+    j_rs = rs.collect { |r| r.to_json }
+
+    [r1, r2, r3].each do |r_orig|
+      expect( j_rs.include? r_orig.to_json ).to be true
+    end
+  end
+
   it "should convert to JSON" do
     r = valid_revenue
     r.create!
