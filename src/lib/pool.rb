@@ -3,6 +3,8 @@ require_relative 'app'
 
 class Pool
 
+  attr_reader :errors, :pool_id, :splits, :created_at
+  
   # This is going to require some optimization I expect. The goal is to load the
   # most recent pool definition.
   LOAD_QUERY = "SELECT * FROM pools WHERE pool_id=? AND created_at=(SELECT max(created_at) FROM pools WHERE pool_id=? AND created_at<=?)"
@@ -20,21 +22,6 @@ class Pool
     @created_at = nil
   end
   
-
-  def pool_id
-    @pool_id
-  end
-
-
-  def splits
-    @splits
-  end
-
-
-  def created_at
-    @created_at
-  end
-
 
   def split!( account_id, pct )
     if pct.nil? or pct == 0
@@ -109,9 +96,4 @@ class Pool
     @errors.empty?
   end
 
-  
-  def errors
-    @errors
-  end
-  
 end
