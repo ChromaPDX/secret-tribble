@@ -15,8 +15,8 @@ class Pool
   TOTAL_SPLIT_ERROR  = "Total value of splits must equal 1.0"
   PCT_RANGE_ERROR  = "Split must be between 0.0 and 1.0"
   
-  def initialize( pool_id )
-    @pool_id = pool_id
+  def initialize( pool_id = nil )
+    @pool_id = pool_id || App.unique_id
     @splits = {}
     @errors = []
     @created_at = nil

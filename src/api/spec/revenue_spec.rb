@@ -39,6 +39,10 @@ describe "/v1/revenue" do
 
   it "GET should return all of the revenue events for a pool" do
     pool_id = App.unique_id
+    p = Pool.new(pool_id)
+    p.split!( @account_id, BigDecimal.new("1.0") )
+    p.save
+    
     r1 = Revenue.new( pool_id: pool_id,
                       amount: BigDecimal.new( "12.3" ),
                       currency: Revenue::BTC )

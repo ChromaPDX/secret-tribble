@@ -12,7 +12,7 @@ get '/v1/revenue.json' do
     end
 
     if pool_id
-      rs = Revenue.with_pool_id( pool_id )
+      rs = Revenue.with_account_pool( @account.account_id, pool_id )
       @out = rs
       return
     end
