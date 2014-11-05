@@ -27,15 +27,24 @@ end
 
 
 # We have several custom headers to assist with debugging
-def check_headers( resp, status = 200 )
+def check_headers( resp = nil, status = 200 )
+  resp ||= last_response
   expect( resp.headers['Content-Type'] ).to eq("application/json")
   expect( resp.headers['Chroma-Processing-MS'] ).to_not be_nil
   expect( resp.status ).to eq(status)
 end
 
 
+# extracts a JSON object from the response body
+def get_json( resp = nil )
+  resp ||= last_response
+  JSON.parse( resp.body )
+end
+
+
 # Checks an expected error object
-def check_errors( resp, error_string = false )
+def check_errors( resp = nil, error_string = false )
+  resp ||= last_response
   j = JSON.parse( resp.body )
   expect(j['errors']).to be_an(Array)
   
@@ -58,9 +67,12 @@ end
 # creates the environment needed to authenticate requests
 def setup_credentials
   @secret_key = App.unique_id
+  @user = "test@test.com"
+  @password = App.unique_id
   @account = Account.create! "test account"
   @account_id = @account.account_id
   @account.set_secret_key( @secret_key )
+  @account.set_user_pass( @user, @password )
   @metadata = "example token"
   @token = Token.create!( @account_id, @metadata )
   @token_id = @token.token_id

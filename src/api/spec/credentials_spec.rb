@@ -19,6 +19,4 @@ describe '/v1/credentials.json' do
     expect(last_response.headers['Content-Type'] ).to eq("text/html;charset=utf-8")
   end
 
-  it "POST should create credentials for an account"
-
 end

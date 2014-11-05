@@ -14,6 +14,7 @@ class Account
   def initialize( opts = {} )
     @account_id = opts[:account_id]
     @name = opts[:name]
+    @created_at = opts[:created_at]
     @errors = []
   end
 
@@ -21,7 +22,8 @@ class Account
   def to_json
     {
       account_id: @account_id,
-      name: @name
+      name: @name,
+      created_at: @created_at
     }.to_json
   end
 
