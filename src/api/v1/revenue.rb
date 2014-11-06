@@ -4,6 +4,11 @@ get '/v1/revenue.json' do
   if require_token!
     revenue_id = params[:revenue_id]
     pool_id = params[:pool_id]
+
+    if !revenue_id and !pool_id
+      @errors.add("Please specify a pool_id or revenue_id")
+      return
+    end
     
     if revenue_id
       r = Revenue.with_revenue_id( revenue_id )
