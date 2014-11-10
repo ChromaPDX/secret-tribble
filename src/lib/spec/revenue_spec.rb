@@ -56,16 +56,16 @@ describe Revenue do
     end
   end
 
-  it "should retrieve all revenue for a given pool, constrained by account_id" do
+  it "should retrieve all revenue for a given pool, constrained by user_id" do
 
-    account_a = App.unique_id
+    user_a = App.unique_id
     pool_a = Pool.new
-    pool_a.split!( account_a, BigDecimal.new('1.0') )
+    pool_a.split!( user_a, BigDecimal.new('1.0') )
     pool_a.save
 
-    account_b = App.unique_id
+    user_b = App.unique_id
     pool_b = Pool.new
-    pool_b.split!( account_b, BigDecimal.new('1.0') )
+    pool_b.split!( user_b, BigDecimal.new('1.0') )
     pool_b.save
     
     r_a = Revenue.new( pool_id: pool_a.pool_id,
@@ -78,7 +78,7 @@ describe Revenue do
                        currency: Revenue::BTC )
     r_b.create!
 
-    rs_a = Revenue.with_account_pool( account_a, pool_a.pool_id )
+    rs_a = Revenue.with_user_pool( user_a, pool_a.pool_id )
     expect( rs_a.length ).to eq(1)
     expect( rs_a.first.revenue_id ).to eq( r_a.revenue_id )
   end

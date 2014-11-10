@@ -3,28 +3,28 @@ require_relative 'app'
 
 class Token
 
-  MISSING_ACCOUNT_ID_ERROR = "account_id is a required attribute"
+  MISSING_USER_ID_ERROR = "user_id is a required attribute"
 
-  attr_reader :token_id, :account_id, :created_at, :metadata, :errors
+  attr_reader :token_id, :user_id, :created_at, :metadata, :errors
   
   def initialize( opts = {} )
     @token_id = opts[:token_id]
-    @account_id = opts[:account_id]
+    @user_id = opts[:user_id]
     @created_at = opts[:created_at]
     @metadata = opts[:metadata]
     @errors = []
   end
 
   
-  def self.create!( account_id, metadata = nil )
-    @account_id = account_id
+  def self.create!( user_id, metadata = nil )
+    @user_id = user_id
     @metadata = metadata
     @token_id = App.unique_id
     @created_at = Time.now
     
     tokens = App.db[:tokens]
     tokens.insert( token_id: @token_id,
-                   account_id: @account_id,
+                   user_id: @user_id,
                    metadata: @metadata,
                    created_at: @created_at
                  )
@@ -33,8 +33,8 @@ class Token
   end
 
   
-  def self.all_for( account_id )
-    raw_tokens = App.db[:tokens].filter( account_id: account_id )
+  def self.all_for( user_id )
+    raw_tokens = App.db[:tokens].filter( user_id: user_id )
     raw_tokens.collect { |rt| rehydrate( rt ) }
   end
   
@@ -42,7 +42,7 @@ class Token
   def to_json( opt = nil )
     {
       token_id: @token_id,
-      account_id: @account_id,
+      user_id: @user_id,
       metadata: @metadata,
       created_at: @created_at
     }
@@ -52,7 +52,7 @@ class Token
 
   def self.rehydrate( result )
     Token.new( token_id: result[:token_id],
-               account_id: result[:account_id],
+               user_id: result[:user_id],
                created_at: result[:created_at],
                metadata: result[:metadata] )
   end
@@ -71,7 +71,7 @@ class Token
 
   
   def valid?
-    @errors << MISSING_ACCOUNT_ID_ERROR if @account_id.nil?
+    @errors << MISSING_USER_ID_ERROR if @user_id.nil?
     @errors.empty?
   end
 

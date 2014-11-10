@@ -41,15 +41,15 @@ end
 
 
 def secret_auth_present?
-  params[:account_id] and params[:secret_key]
+  params[:user_id] and params[:secret_key]
 end
 
 
 def require_secret_key!
   return false unless secret_auth_present?
   
-  @account = Account.with_secret_key( params[:account_id], params[:secret_key] )
-  return false unless @account
+  @user = User.with_secret_key( params[:user_id], params[:secret_key] )
+  return false unless @user
 
   true
 end
@@ -61,8 +61,8 @@ def require_token!
   @token = Token.get( params[:token_id] )
   return false unless @token
 
-  @account = Account.get( @token.account_id )
-  return false unless @account
+  @user = User.get( @token.user_id )
+  return false unless @user
 
   true
 end
@@ -122,7 +122,7 @@ end
 
 doc "/v1/index"
 
-require_relative 'v1/accounts.rb'
+require_relative 'v1/users.rb'
 require_relative 'v1/pools.rb'
 require_relative 'v1/queues.rb'
 require_relative 'v1/revenue.rb'

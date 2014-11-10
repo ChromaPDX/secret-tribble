@@ -10,7 +10,7 @@ class Pool
   LOAD_QUERY = "SELECT * FROM pools WHERE pool_id=? AND created_at=(SELECT max(created_at) FROM pools WHERE pool_id=? AND created_at<=?)"
 
   # Error strings
-  BAD_ACCOUNT_ERROR  = "Account ID is not a valid ID"
+  BAD_USER_ERROR  = "User ID is not a valid ID"
   PCT_TYPE_ERROR     = "Split value must be a BigDecimal"
   TOTAL_SPLIT_ERROR  = "Total value of splits must equal 1.0"
   PCT_RANGE_ERROR  = "Split must be between 0.0 and 1.0"
@@ -23,11 +23,11 @@ class Pool
   end
   
 
-  def split!( account_id, pct )
+  def split!( user_id, pct )
     if pct.nil? or pct == 0
-      @splits.delete(account_id)
+      @splits.delete(user_id)
     else
-      @splits[account_id] = pct
+      @splits[user_id] = pct
     end
   end
 
@@ -43,9 +43,9 @@ class Pool
     @created_at = Time.now # uniform created_at dates for all of the splits.
 
     # return a list of pool_ids for the new pools
-    @splits.collect do |account_id, split_pct|
+    @splits.collect do |user_id, split_pct|
       pools.insert( pool_id: @pool_id,
-                    account_id: account_id,
+                    user_id: user_id,
                     split_pct: split_pct,
                     created_at: @created_at)
     end
@@ -56,7 +56,7 @@ class Pool
     {
       created_at: @created_at,
       pool_id: @pool_id,
-      splits: Hash[ @splits.collect { |account_id, split_pct| [account_id, "%.4f" % split_pct] } ]
+      splits: Hash[ @splits.collect { |user_id, split_pct| [user_id, "%.4f" % split_pct] } ]
     }
       .delete_if { |k,v| v.nil? }
       .to_json
@@ -68,7 +68,7 @@ class Pool
     return false if pools.empty?
     
     pools.each do |d|
-      @splits[ d[:account_id] ] = d[:split_pct]
+      @splits[ d[:user_id] ] = d[:split_pct]
     end
     
     @created_at = pools.first[:created_at]
@@ -82,7 +82,7 @@ class Pool
 
     # validate individual split keys and values
     @splits.each do |k,v|
-      @errors << BAD_ACCOUNT_ERROR unless k.is_a? String
+      @errors << BAD_USER_ERROR unless k.is_a? String
       @errors << PCT_TYPE_ERROR unless v.is_a? BigDecimal
       @errors << PCT_RANGE_ERROR unless (v >= BigDecimal.new("0.0") and v <= BigDecimal.new("1.0"))
     end

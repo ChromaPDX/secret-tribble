@@ -12,7 +12,7 @@ require_relative '../api.rb'
 
 require_relative '../../lib/pool.rb'
 require_relative '../../lib/token.rb'
-require_relative '../../lib/account.rb'
+require_relative '../../lib/user.rb'
 require_relative '../../lib/persistent_queue.rb'
 
 RSpec.configure do |cfg|
@@ -30,6 +30,10 @@ end
 # We have several custom headers to assist with debugging
 def check_headers( resp = nil, status = 200 )
   resp ||= last_response
+
+  # print out the 500 error if we have one!
+  puts resp.body if resp.status == 500
+  
   expect( resp.status ).to eq(status)
   expect( resp.headers['Content-Type'] ).to eq("application/json")
   expect( resp.headers['Chroma-Processing-MS'] ).to_not be_nil
@@ -68,13 +72,13 @@ end
 # creates the environment needed to authenticate requests
 def setup_credentials
   @secret_key = App.unique_id
-  @user = "test@test.com"
+  @username = "test+#{App.unique_id}@test.com"
   @password = App.unique_id
-  @account = Account.create! "test account"
-  @account_id = @account.account_id
-  @account.set_secret_key( @secret_key )
-  @account.set_user_pass( @user, @password )
+  @user = User.create! "test user"
+  @user_id = @user.user_id
+  @user.set_secret_key( @secret_key )
+  @user.set_username_pass( @username, @password )
   @metadata = "example token"
-  @token = Token.create!( @account_id, @metadata )
+  @token = Token.create!( @user_id, @metadata )
   @token_id = @token.token_id
 end

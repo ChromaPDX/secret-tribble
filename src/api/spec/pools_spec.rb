@@ -31,8 +31,8 @@ describe '/v1/pools' do
     # data integrity check
     expect(j['pool_id']).to eq(d.pool_id)
     expect(j['created_at']).to eq(d.created_at.to_s)
-    j['splits'].each do |account, split_pct|
-      expect(d.splits[account]).to eq(BigDecimal.new(split_pct))
+    j['splits'].each do |user, split_pct|
+      expect(d.splits[user]).to eq(BigDecimal.new(split_pct))
     end
   end
 

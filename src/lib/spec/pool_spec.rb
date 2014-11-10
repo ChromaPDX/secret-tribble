@@ -123,8 +123,8 @@ describe "Pool" do
     expect( parsed_js['pool_id'] ).to eq(d.pool_id)
     expect( parsed_js['created_at'] ).to eq(d.created_at)
 
-    parsed_js['splits'].each do |account_id, split_pct|
-      expect( BigDecimal.new(split_pct) ).to eq( d.splits[account_id] )
+    parsed_js['splits'].each do |user_id, split_pct|
+      expect( BigDecimal.new(split_pct) ).to eq( d.splits[user_id] )
     end
   end
 
@@ -135,7 +135,7 @@ describe "Pool" do
     d.split!( 0.4523, BigDecimal.new("1.0") )
 
     expect(d.valid?).to be false
-    expect(d.errors.include?(Pool::BAD_ACCOUNT_ERROR)).to be true
+    expect(d.errors.include?(Pool::BAD_USER_ERROR)).to be true
   end
   
   it "should not accept a split value that is not a BigDecimal" do

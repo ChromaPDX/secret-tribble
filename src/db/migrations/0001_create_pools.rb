@@ -3,7 +3,7 @@ Sequel.migration do
     App.db.run <<-eos
       CREATE TABLE pools (
         pool_id VARCHAR(32) NOT NULL,
-        account_id VARCHAR(32) NOT NULL,
+        user_id VARCHAR(32) NOT NULL,
         split_pct DECIMAL(5,4) NOT NULL,
         created_at TIMESTAMP NOT NULL
       )
@@ -11,7 +11,7 @@ Sequel.migration do
     
     add_index :pools, :created_at
     add_index :pools, :pool_id
-    add_index :pools, :account_id
+    add_index :pools, :user_id
   end
 
   down do

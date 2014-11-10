@@ -70,23 +70,36 @@ class User
   def set_encrypted_kind( kind, cleartext, identifier = nil )
     creds = App.db[:credentials]
     salt = App.unique_id
-    
-    # delete any existing credentials of this type for this user
-    creds.where(kind: kind,
-                user_id: @user_id).delete
-    
-    # create a new credential for the user
-    creds.insert(kind: kind,
-                 user_id: @user_id,
-                 salt: salt,
-                 identifier: identifier,
-                 password_digest: User.hash_string( cleartext, salt ),
-                 created_at: Time.now )
+
+    begin
+      App.db.transaction do
+        # all or nothing process for updating a user's credentials. generally speaking,
+        # there's a unique index on 'kind' and 'identifier' which cannot be violated.
+        # the transaction will automatically rollback if the database throws an exception.
+        
+        # delete any existing credentials of this type for this user
+        creds.where(kind: kind,
+                    user_id: @user_id).delete
+        
+        # create a new credential for the user
+        creds.insert(kind: kind,
+                     user_id: @user_id,
+                     salt: salt,
+                     identifier: identifier,
+                     password_digest: User.hash_string( cleartext, salt ),
+                     created_at: Time.now )
+        return true
+      end
+    rescue => e
+      # catch the exception re-raised by Sequel
+    end
+
+    return false
   end
 
   
-  def set_user_pass( user, password )
-    set_encrypted_kind( PASSWORD_CREDENTIAL_KIND, password, user )
+  def set_username_pass( username, password )
+    set_encrypted_kind( PASSWORD_CREDENTIAL_KIND, password, username )
   end
 
   
@@ -112,7 +125,7 @@ class User
   end
 
   
-  def self.with_user_pass( identifier, password )
+  def self.with_username_pass( identifier, password )
     creds = App.db[:credentials]
 
     # see if we can find a password record for that user

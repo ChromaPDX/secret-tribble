@@ -1,4 +1,4 @@
-# /v1/accounts.json
+# /v1/users.json
 
 ## GET
 
@@ -6,10 +6,10 @@
 | -----    | -----------                 |
 | token_id | A valid token_id            |
 
-Returns an `account`:
+Returns an `user`:
 
 ```json
-{ "account_id" : ..., "name" : ..., "created_at" : ... }
+{ "user_id" : ..., "name" : ..., "created_at" : ... }
 ```
 
 ### Response
@@ -24,16 +24,16 @@ A successful response will contain a JSON pool representation for you to verify.
 
 ## POST
 
-*Logs in to an account, given a user and password.*
+*Logs in to an user, given a user and password.*
 
 | Param    | Description                 |
 | -----    | -----------                 |
 | user     | A valid username            |
-| password | The account password        |
+| password | The user password        |
 
 ### Response
 
-Returns a new `token` for the authenticated account.
+Returns a new `token` for the authenticated user.
 
 | Status | Description          |
 | ------ | -----------          |

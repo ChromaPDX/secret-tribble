@@ -8,7 +8,7 @@ class Revenue
   UNKNOWN_CURRENCY_ERROR = "Unknown currency type."
   AMOUNT_TYPE_ERROR = "Revenue amount must be a BigDecimal."
 
-  ACCOUNT_POOL_QUERY = "SELECT revenue.* FROM revenue, pools WHERE revenue.pool_id=pools.pool_id AND pools.account_id=? AND pools.pool_id=?"
+  USER_POOL_QUERY = "SELECT revenue.* FROM revenue, pools WHERE revenue.pool_id=pools.pool_id AND pools.user_id=? AND pools.pool_id=?"
   
   def initialize( opts = {} )
     @revenue_id = opts[:revenue_id]
@@ -70,8 +70,8 @@ class Revenue
     results.collect { |r| rehydrate(r) }
   end
 
-  def self.with_account_pool( account_id, pool_id )
-    rs = App.db.fetch(ACCOUNT_POOL_QUERY, account_id, pool_id)
+  def self.with_user_pool( user_id, pool_id )
+    rs = App.db.fetch(USER_POOL_QUERY, user_id, pool_id)
     rs.collect { |r| rehydrate(r) }
   end
 
