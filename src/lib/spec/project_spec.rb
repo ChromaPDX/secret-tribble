@@ -3,6 +3,14 @@ require_relative '../project'
 
 describe Project do
 
+  before(:all) do
+    @pool = Pool.new( App.unique_id )
+    @pool.split!("alice", BigDecimal.new("0.5"))
+    @pool.split!("bob", BigDecimal.new("0.3"))
+    @pool.split!("carol", BigDecimal.new("0.2"))
+    @pool.save
+  end
+  
   it "should save and load" do
     project_name = "derp"
     project = Project.new( name: project_name )
@@ -35,6 +43,16 @@ describe Project do
 
     p2 = Project.get( p1.project_id )
     expect( p1.to_json ).to eq( p2.to_json )
+  end
+
+  it "should have users associated with it, via pool splits" do
+    p = Project.new( name: "woooot", pool_id: @pool.pool_id )
+    backers = p.with_backers!
+    expect( backers ).to eq( @pool.splits )
+    expect( p.backers ).to eq( @pool.splits )
+
+    j = JSON.parse( p.to_json )
+    expect( j['backers'] ).to be_a(Hash)
   end
 
 end
