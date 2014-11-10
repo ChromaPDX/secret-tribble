@@ -12,32 +12,28 @@ describe "App" do
     
     shell_cfg = App.load_shell_config
 
-    expect( shell_cfg ).to eq({
-                                "db" => {
-                                  "adapter" => "postgres",
-                                  "host" => "host",
-                                  "port" => "port",
-                                  "database" => "database",
-                                  "user" => "user",
-                                  "password" => "password"
-                                }
-                              })
+    expect( shell_cfg['db'] ).to eq({
+                                      "adapter" => "postgres",
+                                      "host" => "host",
+                                      "port" => "port",
+                                      "database" => "database",
+                                      "user" => "user",
+                                      "password" => "password"
+                                    })
   end
 
   it "should load config information from a named environment" do
     file_path = App.config_file_path( "vagrant" )
     file_cfg = App.load_file_config( file_path )
 
-    expect( file_cfg ).to eq({
-                                "db" => {
-                                  "adapter" => "postgres",
-                                  "host" => "localhost",
-                                  "port" => "5432",
-                                  "database" => "chroma_dev",
-                                  "user" => "vagrant",
-                                  "password" => "vagrant"
-                                }
-                              })
+    expect( file_cfg['db'] ).to eq({
+                                     "adapter" => "postgres",
+                                     "host" => "localhost",
+                                     "port" => "5432",
+                                     "database" => "chroma_dev",
+                                     "user" => "vagrant",
+                                     "password" => "vagrant"
+                                   })
   end
 
   it "should generate unique_ids for use as keys in the database" do
