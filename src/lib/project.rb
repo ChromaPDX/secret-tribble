@@ -3,7 +3,7 @@ require_relative 'pool'
 
 class Project
 
-  attr_reader :project_id, :pool_id, :name, :created_at, :backers
+  attr_reader :project_id, :pool_id, :name, :created_at
 
   
   def initialize( opts = {} )
@@ -11,7 +11,6 @@ class Project
     @pool_id = opts[:pool_id]
     @name = opts[:name]
     @created_at = opts[:created_at]
-    @backers = {}
   end
 
   
@@ -31,28 +30,20 @@ class Project
   end
 
 
-  def with_backers!
-    p = Pool.new( @pool_id )
-    p.load!
-    @backers = p.splits
-  end
-  
-  
   def db
     App.db[:projects]
   end
 
   
   def to_json
-    j = {
+    {
       project_id: @project_id,
       pool_id: @pool_id,
       name: @name,
       created_at: @created_at
     }
-    j[:backers] = Hash[@backers.map { |k,v| [k, "%.4f" % v] }] unless @backers.empty?
-    
-    j.delete_if { |k,v| v.nil? }.to_json
+      .delete_if { |k,v| v.nil? }
+      .to_json
   end
 
   

@@ -17,12 +17,6 @@ get '/v1/projects.json' do
       return
     end
 
-    extras = params[:include].split(',') if params[:include]
-
-    if extras and extras.include? 'backers'
-      project.with_backers!
-    end
-
     @out = project
     return
   end

@@ -15,8 +15,6 @@ describe '/v1/projects.json' do
 
     @project = Project.new(name: "herp derp", pool_id: @pool.pool_id )
     @project.save!
-
-    @project.with_backers!
   end
 
   
@@ -47,20 +45,6 @@ describe '/v1/projects.json' do
     expect( @project.pool_id ).to eq(j['pool_id'])
     expect( @project.name ).to eq(j['name'])
     expect( @project.created_at.to_s ).to eq(j['created_at'])
-    expect( j['backers'] ).to be nil
-  end
-
-  
-  it "GET should optionally return backers for a given project" do
-    get '/v1/projects.json', token_id: @token_id, project_id: @project.project_id, include: "backers"
-    check_headers
-    j = get_json
-
-    # turn backer percentages into BigDecimals for comparison
-    j['backers'] = Hash[ j['backers'].map { |k,v| [k, BigDecimal.new(v)] } ]
-
-    @project.with_backers!
-    expect( j['backers'] ).to eq( @project.backers )
   end
 
   

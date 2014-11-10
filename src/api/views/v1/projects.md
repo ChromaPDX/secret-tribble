@@ -1,21 +1,19 @@
 # /v1/projects.json
 
-**The `projects` resource is an internal API. Standard issued tokens will NOT work.**
-
 ## GET
 
 | Param      | Description               |
 | --------   | -------------             |
 | token_id   | A service token           |
-| topic      | The name of the project.    |
-
-Returns the oldest message for the given topic, or an empty JSON object if there is none.
+| project_id | The ID for the project    |
 
 ### Response
 
 ```json
-{ "topic" : ..., "created_at" : timestamp, "message_id" : ..., "body" : { ... } }
+{ 'project_id' : ..., 'created_at' : ..., 'name' : ..., 'pool_id' : ... }
 ```
+
+* Passing `splits` into the `include` parameter will add a `backers
 
 ## POST
 

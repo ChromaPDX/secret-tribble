@@ -45,14 +45,4 @@ describe Project do
     expect( p1.to_json ).to eq( p2.to_json )
   end
 
-  it "should have users associated with it, via pool splits" do
-    p = Project.new( name: "woooot", pool_id: @pool.pool_id )
-    backers = p.with_backers!
-    expect( backers ).to eq( @pool.splits )
-    expect( p.backers ).to eq( @pool.splits )
-
-    j = JSON.parse( p.to_json )
-    expect( j['backers'] ).to be_a(Hash)
-  end
-
 end
