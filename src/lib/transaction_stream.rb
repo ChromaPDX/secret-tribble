@@ -20,8 +20,8 @@ class TransactionStream
       
       ws.on :open do |event|
         p [:open]
-        ws.send('{"op":"blocks_sub"}')
-        # ws.send('{"op":"unconfirmed_sub"}')
+        # ws.send('{"op":"blocks_sub"}')
+        ws.send('{"op":"unconfirmed_sub"}')
       end
 
       ws.on :message do |event|
