@@ -68,6 +68,15 @@ def require_token!
 end
 
 
+def require_service_token!
+  return false unless token_present?
+
+  return false unless App.config["services"]["token"] == params[:token_id]
+  
+  true
+end
+
+
 def invalid_credentials!
   status 401
   @errors.add "Invalid credentials."
@@ -115,5 +124,6 @@ doc "/v1/index"
 
 require_relative 'v1/accounts.rb'
 require_relative 'v1/pools.rb'
+require_relative 'v1/queues.rb'
 require_relative 'v1/revenue.rb'
 require_relative 'v1/tokens.rb'
