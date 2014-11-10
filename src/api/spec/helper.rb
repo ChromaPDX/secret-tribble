@@ -14,6 +14,7 @@ require_relative '../../lib/pool.rb'
 require_relative '../../lib/token.rb'
 require_relative '../../lib/user.rb'
 require_relative '../../lib/persistent_queue.rb'
+require_relative '../../lib/project.rb'
 
 RSpec.configure do |cfg|
   cfg.before(:suite) do

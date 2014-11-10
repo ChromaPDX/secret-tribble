@@ -124,6 +124,7 @@ doc "/v1/index"
 
 require_relative 'v1/users.rb'
 require_relative 'v1/pools.rb'
+require_relative 'v1/projects.rb'
 require_relative 'v1/queues.rb'
 require_relative 'v1/revenue.rb'
 require_relative 'v1/tokens.rb'
