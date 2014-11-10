@@ -3,16 +3,16 @@ require 'bcrypt'
 
 require_relative 'app'
 
-class Account
+class User
 
-  attr_reader :name, :account_id, :created_at
+  attr_reader :name, :user_id, :created_at
 
   PASSWORD_CREDENTIAL_KIND   = "PASSWORD"
   SECRET_KEY_CREDENTIAL_KIND = "SECRET_KEY"
 
   
   def initialize( opts = {} )
-    @account_id = opts[:account_id]
+    @user_id = opts[:user_id]
     @name = opts[:name]
     @created_at = opts[:created_at]
     @errors = []
@@ -21,7 +21,7 @@ class Account
   
   def to_json
     {
-      account_id: @account_id,
+      user_id: @user_id,
       name: @name,
       created_at: @created_at
     }.to_json
@@ -29,21 +29,21 @@ class Account
 
   
   def self.create!( name )
-    @account_id = App.unique_id
+    @user_id = App.unique_id
     @name = name
     @created_at = Time.now
 
-    accounts = App.db[:accounts]
-    accounts.insert( account_id: @account_id,
+    users = App.db[:users]
+    users.insert( user_id: @user_id,
                      name: @name,
                      created_at: @created_at )
 
-    self.get( @account_id )
+    self.get( @user_id )
   end
 
   
-  def self.get( account_id )
-    raw = App.db[:accounts][account_id: account_id]
+  def self.get( user_id )
+    raw = App.db[:users][user_id: user_id]
     return false if raw.nil?
 
     rehydrate( raw )
@@ -51,7 +51,7 @@ class Account
 
   
   def self.rehydrate( result )
-    Account.new( account_id: result[:account_id],
+    User.new( user_id: result[:user_id],
                  name: result[:name],
                  created_at: result[:created_at] )
   end
@@ -71,16 +71,16 @@ class Account
     creds = App.db[:credentials]
     salt = App.unique_id
     
-    # delete any existing credentials of this type for this account
+    # delete any existing credentials of this type for this user
     creds.where(kind: kind,
-                account_id: @account_id).delete
+                user_id: @user_id).delete
     
-    # create a new credential for the account
+    # create a new credential for the user
     creds.insert(kind: kind,
-                 account_id: @account_id,
+                 user_id: @user_id,
                  salt: salt,
                  identifier: identifier,
-                 password_digest: Account.hash_string( cleartext, salt ),
+                 password_digest: User.hash_string( cleartext, salt ),
                  created_at: Time.now )
   end
 
@@ -94,11 +94,11 @@ class Account
     set_encrypted_kind( SECRET_KEY_CREDENTIAL_KIND, key )
   end
   
-  def self.with_secret_key( account_id, cleartext )
+  def self.with_secret_key( user_id, cleartext )
     creds = App.db[:credentials]
 
-    # see if we can find a password record for that account
-    c = creds[account_id: account_id,
+    # see if we can find a password record for that user
+    c = creds[user_id: user_id,
               kind: SECRET_KEY_CREDENTIAL_KIND]
     return false if c.nil?
 
@@ -107,15 +107,15 @@ class Account
     checker = BCrypt::Password.new( c[:password_digest] )
     return false unless checker == target
 
-    # load the associated account!
-    get( account_id )
+    # load the associated user!
+    get( user_id )
   end
 
   
   def self.with_user_pass( identifier, password )
     creds = App.db[:credentials]
 
-    # see if we can find a password record for that account
+    # see if we can find a password record for that user
     c = creds[identifier: identifier,
               kind: PASSWORD_CREDENTIAL_KIND]
     return false if c.nil?
@@ -125,8 +125,8 @@ class Account
     checker = BCrypt::Password.new( c[:password_digest] )
     return false unless checker == target
 
-    # load the associated account!
-    get( c[:account_id] )
+    # load the associated user!
+    get( c[:user_id] )
   end
 
 end
