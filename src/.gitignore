@@ -1,3 +1,4 @@
 # ignore temporary files for hacking on things
 _*
 *.log
+logs/*
