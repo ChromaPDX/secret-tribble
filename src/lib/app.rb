@@ -5,7 +5,7 @@ require 'logger'
 
 module App
 
-  @@db_tables = [:pools, :tokens, :accounts, :credentials, :revenue]
+  @@db_tables = [:pools, :tokens, :accounts, :credentials, :revenue, :queues]
   @@config_path = false
   @@config = {}
   @@db = false
@@ -64,6 +64,9 @@ module App
         "database" => ENV['CHROMA_DB_NAME'],
         "user" => (ENV['CHROMA_DB_USER'] || ENV['PG_USER']),
         "password" => (ENV['CHROMA_DB_PASSWORD'] || ENV['PG_PASSWORD']),
+      },
+      "services" => {
+        "token" => ENV['CHROMA_TOKEN']
       }
     }.delete_if { |k,v| v.nil? or v.empty? }
   end

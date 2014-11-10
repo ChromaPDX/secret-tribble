@@ -6,5 +6,8 @@
 	"database" : "chroma_dev",
 	"user" : "vagrant",
 	"password" : "vagrant"
+    },
+    "services" : {
+	"token" : "1kcbqKjCQpex1qQf8hkuixFOGo3SARRr"
     }
 }
