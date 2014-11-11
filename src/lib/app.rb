@@ -5,7 +5,7 @@ require 'logger'
 
 module App
 
-  @@db_tables = [:pools, :tokens, :users, :credentials, :revenue, :queues, :projects]
+  @@db_tables = [:pools, :tokens, :users, :credentials, :revenue, :queues, :projects, :wallets]
   @@config_path = false
   @@config = {}
   @@db = false
