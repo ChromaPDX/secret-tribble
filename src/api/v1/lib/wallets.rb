@@ -22,7 +22,31 @@ get '/v1/wallets.json' do
     @errors.add("No wallet found with wallet_id #{wallet_id}")
     return
   end
-  
+
   @out = wallet
 end
 
+get '/v1/wallets/search.json' do
+  unless require_service_token!
+    invalid_credentials!
+    return
+  end
+
+  kind = params[:kind]
+  identifier = params[:identifier]
+
+  unless kind and identifier
+    @errors.add("Please specify a kind and identifier")
+    return
+  end
+
+  wallet = Wallet.with_kind_identifier( kind, identifier )
+
+  unless wallet
+    status 404
+    @errors.add("No wallet found.")
+    return
+  end
+
+  @out = wallet
+end

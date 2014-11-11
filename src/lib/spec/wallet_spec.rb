@@ -36,4 +36,12 @@ describe Wallet do
     expect(s.identifier).to eq(w.identifier)
   end
 
+  it "should find by kind and identifier" do
+    w = valid_wallet
+    w.save!
+
+    s = Wallet.with_kind_identifier( w.kind, w.identifier )
+    expect( s.to_json ).to eq(w.to_json)
+  end
+  
 end

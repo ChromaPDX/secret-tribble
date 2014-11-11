@@ -75,4 +75,10 @@ class Wallet
     rehydrate( App.db[:wallets][wallet_id: wallet_id] )
   end
 
+  def self.with_kind_identifier( kind, identifier )
+    w = App.db[:wallets].where(kind: kind, identifier: identifier).first
+    return rehydrate(w) if w
+    false
+  end
+
 end

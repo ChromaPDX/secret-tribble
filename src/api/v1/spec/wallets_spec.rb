@@ -36,7 +36,7 @@ describe '/v1/wallets.json' do
     check_headers
     check_errors
     
-    # legit basic request
+    # legit basic request by wallet_id
     get '/v1/wallets.json', token_id: @token_id, wallet_id: @wallet.wallet_id
     check_headers
     j = get_json
@@ -47,6 +47,13 @@ describe '/v1/wallets.json' do
     expect( @wallet.kind ).to eq(j['kind'])
     expect( @wallet.currency ).to eq(j['currency'])
     expect( @wallet.identifier ).to eq(j['identifier'])
+
+    # legit basic request by kind and identifier
+    get '/v1/wallets/search.json', token_id: App.config['services']['token'], kind: @wallet.kind, identifier: @wallet.identifier
+    check_headers
+    j = get_json
+
+    expect( @wallet.wallet_id ).to eq(j['wallet_id'])    
   end
 
   it "POST should require a valid token"
