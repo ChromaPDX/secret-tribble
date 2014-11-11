@@ -3,6 +3,9 @@ require 'eventmachine'
 require 'json'
 
 require_relative 'persistent_queue'
+require_relative 'wallet'
+require_relative 'pool'
+require_relative 'project'
 
 class TransactionStream
 
@@ -25,7 +28,34 @@ class TransactionStream
       end
 
       ws.on :message do |event|
-        transaction_queue.push( JSON.parse( event.data ) )
+        # CURRENTLY IMPLEMENTED AS DIRECT TO DB; RUN ME THROUGH THE API!
+        btc_outputs = event['x']['out']
+        btc_outputs.each do |o|
+          identifier = o['addr']
+          satoshis   = o['value']
+
+          wallet = Wallet.with_kind_identifier( Wallet::REVENUE_KIND, identifier )
+
+          if wallet
+            pool = Pool.get( wallet.relation_id )
+            project = Project.with_pool( pool.pool_id )
+          end
+
+          next unless wallet and pool and project
+
+          transaction_id = App.unique_id
+          
+          msg = {
+            currency: Wallet::BTC_CURRENCY,
+            amount: satoshis,
+            project_id: project.project_id,
+            pool_id: pool.pool_id,
+            origin: { name: 'blockchain' },
+            transaction_id: transaction_id
+          }
+          
+          transaction_queue.push( msg )
+        end
       end
 
       ws.on :close do |event|
