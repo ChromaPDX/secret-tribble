@@ -118,7 +118,7 @@ end
 if development?
   set :show_exceptions, false
   error do
-    puts "\n --- \n #{env['sinatra.error'].backtrace.join("\n\t")} \n"
+    puts "\n --- \n #{env['sinatra.error'].error}\n#{env['sinatra.error'].backtrace.join("\n\t")} \n"
   end
 end
 
