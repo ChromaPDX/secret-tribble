@@ -4,10 +4,14 @@ require_relative '../wallet'
 describe Wallet do
 
   def valid_wallet
-    Wallet.new(account_id: App.unique_id,
+    Wallet.new(relation_id: App.unique_id,
                kind: Wallet::ORIGIN_KIND,
-               currency: Wallet::BITCOIN_CURRENCY,
+               currency: Wallet::BTC_CURRENCY,
                identifier: App.unique_id)
+  end
+
+  before(:each) do
+    App.db[:wallets].delete
   end
   
   it "should validate all fields" do
@@ -26,7 +30,7 @@ describe Wallet do
     s = Wallet.get( w.wallet_id )
     expect(s.wallet_id).to eq(w.wallet_id)
     expect(s.created_at.to_s).to eq(w.created_at.to_s)
-    expect(s.account_id).to eq(w.account_id)
+    expect(s.relation_id).to eq(w.relation_id)
     expect(s.kind).to eq(w.kind)
     expect(s.currency).to eq(w.currency)
     expect(s.identifier).to eq(w.identifier)

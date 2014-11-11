@@ -10,10 +10,10 @@ describe '/v1/wallets.json' do
 
   before(:all) do
     setup_credentials
-    @wallet = Wallet.new(account_id: App.unique_id,
-                         kind: Wallet::ORIGIN_KIND,
-                         currency: Wallet::BITCOIN_CURRENCY,
-                         identifier: App.unique_id)
+    @wallet = Wallet.new( relation_id: App.unique_id,
+                          kind: Wallet::ORIGIN_KIND,
+                          currency: Wallet::BTC_CURRENCY,
+                          identifier: App.unique_id)
     @wallet.save!
   end
 
@@ -42,14 +42,13 @@ describe '/v1/wallets.json' do
     j = get_json
 
     expect( @wallet.wallet_id ).to eq(j['wallet_id'])
-    expect( @wallet.account_id ).to eq(j['account_id'])
+    expect( @wallet.relation_id ).to eq(j['relation_id'])
     expect( @wallet.created_at.to_s ).to eq(j['created_at'])
     expect( @wallet.kind ).to eq(j['kind'])
     expect( @wallet.currency ).to eq(j['currency'])
     expect( @wallet.identifier ).to eq(j['identifier'])
   end
 
-  
   it "POST should require a valid token"
 
   it "GET and POST should be constrained to a user associated with the wallet!"
