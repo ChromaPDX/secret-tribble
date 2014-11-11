@@ -1,5 +1,5 @@
 require_relative 'helper'
-require_relative '../../lib/revenue'
+require_relative '../../../lib/revenue'
 
 describe "/v1/revenue" do
 

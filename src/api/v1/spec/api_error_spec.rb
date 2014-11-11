@@ -1,5 +1,5 @@
 require 'rspec'
-require_relative '../api_error.rb'
+require_relative '../lib/api_error.rb'
 
 describe "APIError" do
 

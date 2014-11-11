@@ -11,7 +11,7 @@ namespace :test do
 
   desc 'Tests only api/'
   RSpec::Core::RakeTask.new(:api) do |t|
-    t.pattern = "api/spec/**/*_spec.rb"
+    t.pattern = "api/v1/spec/**/*_spec.rb"
   end
   
   desc 'Runs all tests'

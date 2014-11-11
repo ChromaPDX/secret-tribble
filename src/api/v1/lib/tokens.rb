@@ -1,4 +1,4 @@
-require_relative '../../lib/token'
+require_relative '../../../lib/token'
 
 doc '/v1/tokens'
 

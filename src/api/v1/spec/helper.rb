@@ -3,18 +3,18 @@
 require 'rspec'
 require 'rack/test'
 require 'fileutils'
-require_relative '../../lib/app'
+require_relative '../../../lib/app'
 ENV['CHROMA_ENV'] ||= 'test'
 FileUtils.rm_f App.log_file_path(ENV['CHROMA_ENV'])
 App.configure!( ENV['CHROMA_ENV'] )
 
-require_relative '../api.rb'
+require_relative '../../api.rb'
 
-require_relative '../../lib/pool.rb'
-require_relative '../../lib/token.rb'
-require_relative '../../lib/user.rb'
-require_relative '../../lib/persistent_queue.rb'
-require_relative '../../lib/project.rb'
+require_relative '../../../lib/pool.rb'
+require_relative '../../../lib/token.rb'
+require_relative '../../../lib/user.rb'
+require_relative '../../../lib/persistent_queue.rb'
+require_relative '../../../lib/project.rb'
 
 RSpec.configure do |cfg|
   cfg.before(:suite) do

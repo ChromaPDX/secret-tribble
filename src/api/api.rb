@@ -1,11 +1,14 @@
 require 'sinatra'
 require 'github/markup'
 require_relative '../lib/app.rb'
-require_relative './api_error.rb'
+require_relative 'v1/lib/api_error.rb'
 
 ENV['CHROMA_ENV'] ||= 'vagrant'
 
 App.configure!( ENV['CHROMA_ENV'] ) unless App.configured?
+
+VIEW_PATH = File.join( File.dirname(__FILE__), 'v1', 'views' )
+set :views, VIEW_PATH
 
 # UTILITY METHODS ------------------------------------------------------------
 
@@ -13,11 +16,13 @@ App.configure!( ENV['CHROMA_ENV'] ) unless App.configured?
 # This API is self documenting!
 def doc( path )
   get "#{path}.html" do
-    template_path = File.join( File.dirname(__FILE__), 'views', "#{path}.md" )
-    rendered = GitHub::Markup.render( template_path )
+
+    endpoint = path.split('/').last
     
-    erb "v1/layout".to_sym, :locals => { :content => rendered }
-    # markdown path.to_sym, layout: "v1/layout".to_sym, layout_engine: :erb
+    template_path = File.join( VIEW_PATH, "#{endpoint}.md" )
+    rendered = GitHub::Markup.render( template_path )
+
+    erb :layout, :locals => { :content => rendered }
   end
 end
 
@@ -122,9 +127,9 @@ end
 
 doc "/v1/index"
 
-require_relative 'v1/users.rb'
-require_relative 'v1/pools.rb'
-require_relative 'v1/projects.rb'
-require_relative 'v1/queues.rb'
-require_relative 'v1/revenue.rb'
-require_relative 'v1/tokens.rb'
+require_relative 'v1/lib/users.rb'
+require_relative 'v1/lib/pools.rb'
+require_relative 'v1/lib/projects.rb'
+require_relative 'v1/lib/queues.rb'
+require_relative 'v1/lib/revenue.rb'
+require_relative 'v1/lib/tokens.rb'

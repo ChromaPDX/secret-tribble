@@ -1,4 +1,4 @@
-require_relative '../../lib/pool.rb'
+require_relative '../../../lib/pool.rb'
 
 doc '/v1/pools'
 get '/v1/pools.json' do
