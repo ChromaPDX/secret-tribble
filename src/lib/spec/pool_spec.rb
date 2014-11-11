@@ -180,4 +180,6 @@ describe "Pool" do
     expect(d.errors.include?(Pool::TOTAL_SPLIT_ERROR)).to be true
   end
 
+  it "should rename #save to #save!"
+  
 end
