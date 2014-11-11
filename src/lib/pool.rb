@@ -52,14 +52,14 @@ class Pool
   end
 
 
-  def to_json
+  def to_json( opts = {} )
     {
       created_at: @created_at,
       pool_id: @pool_id,
       splits: Hash[ @splits.collect { |user_id, split_pct| [user_id, "%.4f" % split_pct] } ]
     }
       .delete_if { |k,v| v.nil? }
-      .to_json
+      .to_json( opts )
   end
 
   
