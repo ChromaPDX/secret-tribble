@@ -48,7 +48,10 @@ class Project
 
   
   def self.get( project_id )
-    Project.new( App.db[:projects][project_id: project_id] )
+    p = App.db[:projects][project_id: project_id]
+    return false if p.nil?
+    
+    Project.new( p )
   end
   
 end
