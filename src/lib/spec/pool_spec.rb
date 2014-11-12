@@ -99,7 +99,7 @@ describe "Pool" do
     d = valid_pool
 
     # test save
-    expect( d.save.length ).to eq( d.splits.keys.length ) 
+    expect( d.save ).to be true 
     
     # test load
     d2 = Pool.new( d.pool_id )

@@ -43,12 +43,14 @@ class Pool
     @created_at = Time.now # uniform created_at dates for all of the splits.
 
     # return a list of pool_ids for the new pools
-    @splits.collect do |user_id, split_pct|
+    @splits.each do |user_id, split_pct|
       pools.insert( pool_id: @pool_id,
                     user_id: user_id,
                     split_pct: split_pct,
                     created_at: @created_at)
     end
+    
+    true
   end
 
 
