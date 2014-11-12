@@ -7,4 +7,6 @@ require_relative '../lib/transaction_stream'
 App.configure!
 
 stream = TransactionStream.new
-stream.collect
+while true do
+  stream.collect
+end
