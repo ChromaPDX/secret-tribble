@@ -68,11 +68,12 @@ class Wallet
   end
 
   def self.rehydrate( rec )
+    return false if rec.nil?
     Wallet.new( rec )
   end
   
   def self.get( wallet_id )
-    rehydrate( App.db[:wallets][wallet_id: wallet_id] )
+    rehydrate( App.db[:wallets][wallet_id: wallet_id.to_s] )
   end
 
   def self.with_kind_identifier( kind, identifier )
