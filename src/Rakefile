@@ -2,6 +2,15 @@ require_relative 'lib/app'
 
 require 'rspec/core/rake_task'
 
+desc 'Opens an IRB console'
+task :console do
+  require 'irb'
+  require 'irb/completion'
+  App.configure!
+  ARGV.clear
+  IRB.start
+end
+
 namespace :test do
 
   desc 'Tests only lib/'
