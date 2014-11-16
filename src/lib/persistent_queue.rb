@@ -35,11 +35,15 @@ class PersistentQueue
   def pop( &block )
     begin
       m = App.db.fetch( POP_QUERY, @topic ).first
+      return unless m
+      
       m[:body] = JSON.parse(m[:body])
       App.log.info("QUEUE - #{@topic} - STARTED - #{m[:message_id]} - #{m[:body].inspect}")
       result = yield m
       App.log.info("QUEUE - #{@topic} - COMPLETED - #{m[:message_id]} - #{result.inspect}") 
     rescue => e
+      puts e
+      puts e.backtrace
       App.log.error("QUEUE - #{@topic } - ERROR - Exception: #{e}")
     end
   end
