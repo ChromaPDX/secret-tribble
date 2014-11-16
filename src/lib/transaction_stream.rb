@@ -15,7 +15,7 @@ class TransactionStream
 
   
   def collect
-    transaction_queue = PersistentQueue.new( "raw_btc_transactions" )
+    transaction_queue = PersistentQueue.new( "revenue_transactions" )
     
     EM.run {
       ws = Faye::WebSocket::Client.new( BLOCKCHAIN_INFO_WS )
@@ -26,7 +26,6 @@ class TransactionStream
       
       ws.on :open do |event|
         p [:open]
-        # ws.send('{"op":"blocks_sub"}')
         ws.send('{"op":"unconfirmed_sub"}')
       end
 
@@ -69,7 +68,8 @@ class TransactionStream
                   amount: satoshis,
                   project_id: project.project_id,
                   pool_id: pool.pool_id,
-                  origin: { name: 'blockchain' },
+                  wallet_id: wallet.wallet_id,
+                  origin: { name: 'blockchain', hash: hash },
                   transaction_id: transaction_id
                 }
                 
