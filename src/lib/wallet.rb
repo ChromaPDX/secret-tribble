@@ -41,8 +41,8 @@ class Wallet
     return false unless valid?
 
     @created_at = Time.now
-    @wallet_id = App.unique_id
-    
+    @wallet_id ||= App.unique_id
+
     ws = App.db[:wallets]
     ws.insert(wallet_id: @wallet_id,
               created_at: @created_at,
@@ -73,13 +73,19 @@ class Wallet
   end
   
   def self.get( wallet_id )
-    rehydrate( App.db[:wallets][wallet_id: wallet_id.to_s] )
+    rehydrate App.db[:wallets][wallet_id: wallet_id.to_s]
+  end
+
+  def self.with_kind_currency_relation( kind, currency, relation_id )
+    rehydrate App.db[:wallets].where(kind: kind, currency: currency, relation_id: relation_id ).first
   end
 
   def self.with_kind_identifier( kind, identifier )
-    w = App.db[:wallets].where(kind: kind, identifier: identifier).first
-    return rehydrate(w) if w
-    false
+    rehydrate App.db[:wallets].where(kind: kind, identifier: identifier).first
   end
 
+  def self.with_kind_currency( kind, currency )
+    rehydrate App.db[:wallets].where(kind: kind, currency: currency).first
+  end
+  
 end
