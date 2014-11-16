@@ -43,5 +43,12 @@ describe Wallet do
     s = Wallet.with_kind_identifier( w.kind, w.identifier )
     expect( s.to_json ).to eq(w.to_json)
   end
+
+  it "should find by kind and currency" do
+    w = valid_wallet
+    w.save!
+    s = Wallet.with_kind_currency( w.kind, w.currency )
+    expect( s.to_json ).to eq( w.to_json )
+  end
   
 end
