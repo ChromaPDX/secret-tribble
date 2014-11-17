@@ -4,13 +4,13 @@ require 'json'
 require 'logger'
 
 # require all of the models
-%w{ persistent_queue pool project revenue token user wallet ledger }.each do |m|
+%w{ persistent_queue pool project token user wallet ledger }.each do |m|
   require_relative m
 end
 
 module App
 
-  @@db_tables = [:pools, :tokens, :users, :credentials, :revenue, :queues, :projects, :wallets, :ledger]
+  @@db_tables = [:pools, :tokens, :users, :credentials, :queues, :projects, :wallets, :ledger]
   @@config_path = false
   @@config = {}
   @@db = false
