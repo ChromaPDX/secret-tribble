@@ -11,15 +11,21 @@ App.db_tables.each do |table|
   App.db[table].delete
 end
 
+BTC_ADDRESSES = {
+  mike: "1Lh7GWvYteroTU9e18CWE1ekfHAWvNkRdo",
+  marcus: "15vbQAQAnU7MmUNw47HZKLH7qRNPgPQufM",
+  peat: "15cwwUajPhVXXVxoTdtj14DW12yJS6sbyr"
+}
+
 # start from scratch.
 # 1: Create five users
-@users = ['Alice', 'Bob', 'Cindy', 'Dave', 'Emily'].map do |name|
-  username = "#{name.downcase}@test.com"
+@users = BTC_ADDRESSES.keys.map do |name|
+  username = "#{name.to_s.downcase}@test.com"
   password = "password"
 
-  user = User.create!( name )
+  user = User.create!( name.to_s )
   user.set_username_pass( username, password )
-  [name.downcase.to_sym, user]
+  [name, user]
 end
 
 # turn the array into a hash, with the names as keys
@@ -32,11 +38,9 @@ end
 
 # 2: Create a pool for those users
 @pool = Pool.new( App.unique_id )
-@pool.split! @users[:alice].user_id, BigDecimal.new("0.50")
-@pool.split! @users[:bob].user_id, BigDecimal.new("0.25")
-@pool.split! @users[:cindy].user_id, BigDecimal.new("0.10")
-@pool.split! @users[:dave].user_id, BigDecimal.new("0.10")
-@pool.split! @users[:emily].user_id, BigDecimal.new("0.05")
+@pool.split! @users[:peat].user_id, BigDecimal.new("0.70")
+@pool.split! @users[:mike].user_id, BigDecimal.new("0.25")
+@pool.split! @users[:marcus].user_id, BigDecimal.new("0.05")
 @pool.save
 
 puts "\nCreated Pool:"
@@ -78,13 +82,13 @@ puts "  project_id: #{@revenue_wallet.relation_id}"
 
 # 6: Create backer wallets for all of the users
 puts "\nCreated Backer Wallets:"
-@users.each_value do |u|
+@users.each do |name, u|
   wallet = Wallet.new(relation_id: u.user_id,
                       kind: Wallet::BACKER_KIND,
                       currency: Wallet::BTC_CURRENCY,
-                      identifier: "#{u.name.upcase}_BITCOIN_ADDRESS")
+                      identifier: BTC_ADDRESSES[name])
   wallet.save!
-  puts "  #{wallet.wallet_id}: #{wallet.identifier}"
+  puts "  #{u.name} (#{u.user_id}): #{wallet.currency} - #{wallet.identifier}"
 end
 
 # 7: Insert a bunch of raw BTC transactions into the queue
