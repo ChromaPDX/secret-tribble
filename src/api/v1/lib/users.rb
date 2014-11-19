@@ -2,8 +2,15 @@ doc "/v1/users"
 
 get "/v1/users.json" do
   if require_token!
-    @out = @user
-    return
+    user_id = params[:user_id]
+
+    if user_id
+      @out = User.get( user_id )
+      return
+    else
+      @out = @user
+      return
+    end
   end
 
   invalid_credentials!
