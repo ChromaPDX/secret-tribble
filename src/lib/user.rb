@@ -35,9 +35,9 @@ class User
 
     users = App.db[:users]
     users.insert( user_id: @user_id,
-                     name: @name,
-                     created_at: @created_at )
-
+                  name: @name,
+                  created_at: @created_at )
+    
     self.get( @user_id )
   end
 
@@ -52,8 +52,8 @@ class User
   
   def self.rehydrate( result )
     User.new( user_id: result[:user_id],
-                 name: result[:name],
-                 created_at: result[:created_at] )
+              name: result[:name],
+              created_at: result[:created_at] )
   end
 
 
