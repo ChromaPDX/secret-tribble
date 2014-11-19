@@ -6,7 +6,7 @@ desc 'Opens an IRB console'
 task :console do
   require 'irb'
   require 'irb/completion'
-  App.configure!
+  App.configure! ENV['CHROMA_ENV']
   ARGV.clear
   IRB.start
 end
