@@ -8,7 +8,18 @@ ENV['CHROMA_ENV'] ||= 'vagrant'
 App.configure!( ENV['CHROMA_ENV'] ) unless App.configured?
 
 VIEW_PATH = File.join( File.dirname(__FILE__), 'v1', 'views' )
+STATIC_PATH = File.join( File.dirname(__FILE__), 'v1', 'static', 'public' )
+STATIC_SRC_PATH = File.join( File.dirname(__FILE__), 'v1', 'static', 'src' )
+
 set :views, VIEW_PATH
+set :public_folder, STATIC_PATH
+
+# Copy 'src' into the 'public' folder for now. When we have a 'production'
+# environment, this is where we want to do minification and whatnot.
+# - axe the public folder
+FileUtils.rm_rf STATIC_PATH
+# - copy over the src
+FileUtils.cp_r STATIC_SRC_PATH, STATIC_PATH
 
 # UTILITY METHODS ------------------------------------------------------------
 
