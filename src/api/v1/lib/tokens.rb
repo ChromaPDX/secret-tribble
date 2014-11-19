@@ -5,7 +5,6 @@ doc '/v1/tokens'
 
 # HEAD checks validity of an existing token.
 head '/v1/tokens.json' do
-
   # single token check
   if token_present?
     if require_token!
