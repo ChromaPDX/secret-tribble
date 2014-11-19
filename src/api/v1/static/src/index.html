@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html ng-app="chromaApp">
+    <head>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.0/angular.min.js"></script>
+
+	<script src="/app.js"></script>
+    </head>
+    <body>
+
+	<div id="authentication" ng-controller="AuthenticationController">
+	    <h3>Authentication</h3>
+	    <div id="login" ng-hide="token()">
+		<p>
+		    To login, use <code>FIRST_NAME@test.com</code> (eg: <i>mike@test.com</i>) as your e-mail address, and <code>password</code> as your password.
+		</p>
+		<form>
+		    <label for="username">E-Mail</label>
+		    <input type="text" ng-model="user.username">
+		    <br>
+		    <label for="password">Password</label>
+		    <input type="password" ng-model="user.password">
+		    <br>
+		    <button ng-click="login(user)">Login</button>
+		</form>
+	    </div>
+	    <div id="logout" ng-show="token()">
+		<button ng-click="logout()">Logout</button>
+	    </div>
+	</div>
+
+	<div id="project" ng-controller="ProjectController" ng-show="token()">
+	    <h3>Your Projects</h3>
+	    <ul>
+		<li ng-repeat="p in projects"><a href="#" ng-click="loadProject(p.project_id)">{{ p.name }}</a></li>
+		<li>
+		    <form>
+			<label for="project_id">Project ID</label>
+			<input type="text" ng-model="form.project_id">
+			<button ng-click="loadProject(form.project_id)">Load</button>
+		    </form>
+		</li>
+	    </ul>
+
+	    <div ng-show="project">
+		{{ project | json }}
+	    </div>	    
+
+	    <div ng-show="pool">
+		<h3>Pool</h3>
+		{{ pool | json }}
+	    </div>
+
+	    <div ng-show="users.length">
+		<h3>Users</h3>
+		<ul>
+		    <li ng-repeat="user in users">{{ user.name }} - {{ (pool.splits[user.user_id] * 100) | number:0 }}%</li>
+		</ul>
+	    </div>
+	</div>
+
+    </body>
+</html>
