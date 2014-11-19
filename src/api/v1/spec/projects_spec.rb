@@ -31,11 +31,6 @@ describe '/v1/projects.json' do
     check_headers nil, 401
     check_errors nil, "Invalid credentials."
 
-    # no project_id? error
-    get '/v1/projects.json', token_id: @token_id
-    check_headers
-    check_errors
-    
     # legit basic request
     get '/v1/projects.json', token_id: @token_id, project_id: @project.project_id
     check_headers
@@ -52,4 +47,6 @@ describe '/v1/projects.json' do
 
   it "GET and POST should be constrained to a user associated with the project!"
 
+  it "GET without project_id should return all of the projects for that user" # NOTE: This is used and works in the API
+  
 end

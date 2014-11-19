@@ -5,6 +5,7 @@ class Project
 
   attr_reader :project_id, :pool_id, :name, :created_at
 
+  WITH_USER_QUERY = "SELECT DISTINCT projects.* FROM projects, pools WHERE projects.pool_id=pools.pool_id AND pools.user_id=?"
   
   def initialize( opts = {} )
     @project_id = opts[:project_id]
@@ -35,7 +36,7 @@ class Project
   end
 
   
-  def to_json
+  def to_json( opts = {} )
     {
       project_id: @project_id,
       pool_id: @pool_id,
@@ -43,7 +44,7 @@ class Project
       created_at: @created_at
     }
       .delete_if { |k,v| v.nil? }
-      .to_json
+      .to_json( opts )
   end
 
   
@@ -52,6 +53,11 @@ class Project
     return false if p.nil?
     
     Project.new( p )
+  end
+
+  def self.with_user( user_id )
+    projects = App.db.fetch(WITH_USER_QUERY, user_id)
+    projects.map { |p| Project.new(p) }
   end
   
 end
