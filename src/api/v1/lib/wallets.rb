@@ -7,23 +7,38 @@ get '/v1/wallets.json' do
     invalid_credentials!
     return
   end
-  
+
+  # singular wallet by wallet_id
   wallet_id = params[:wallet_id]
+  if wallet_id
+    wallet = Wallet.get( wallet_id )
   
-  unless wallet_id
-    @errors.add("Please provide a wallet_id.")
-    return
-  end
-  
-  wallet = Wallet.get( wallet_id )
-  
-  unless wallet
-    status 404
-    @errors.add("No wallet found with wallet_id #{wallet_id}")
+    unless wallet
+      status 404
+      @errors.add("No wallet found with wallet_id #{wallet_id}")
+      return
+    end
+    @out = wallet
     return
   end
 
-  @out = wallet
+  # singular wallet by relation_id
+  relation_id = params[:relation_id]
+  if relation_id
+    wallet = Wallet.with_relation( relation_id )
+  
+    unless wallet
+      status 404
+      @errors.add("No wallet found with relation_id #{relation_id}")
+      return
+    end
+    @out = wallet
+    return
+  end
+
+  
+  # multiple wallets
+  @out = Wallet.with_user( @user.user_id )
 end
 
 get '/v1/wallets/search.json' do

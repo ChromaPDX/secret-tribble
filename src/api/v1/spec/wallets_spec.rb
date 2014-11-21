@@ -31,10 +31,11 @@ describe '/v1/wallets.json' do
     check_headers nil, 401
     check_errors nil, "Invalid credentials."
 
-    # no wallet_id? error
+    # no wallet_id? all of the user's wallets
     get '/v1/wallets.json', token_id: @token_id
     check_headers
-    check_errors
+    j = get_json
+    expect( j ).to be_an( Array )
     
     # legit basic request by wallet_id
     get '/v1/wallets.json', token_id: @token_id, wallet_id: @wallet.wallet_id

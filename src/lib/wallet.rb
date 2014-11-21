@@ -87,5 +87,14 @@ class Wallet
   def self.with_kind_currency( kind, currency )
     rehydrate App.db[:wallets].where(kind: kind, currency: currency).first
   end
+
+  def self.with_user( user_id )
+    ws = App.db[:wallets].where(relation_id: user_id, kind: BACKER_KIND)
+    ws.map { |w| rehydrate w }
+  end
+
+  def self.with_relation( relation_id )
+    rehydrate App.db[:wallets].where(relation_id: relation_id ).first
+  end
   
 end
