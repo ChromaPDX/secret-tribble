@@ -145,6 +145,7 @@ end
 
 doc "/v1/index"
 
+require_relative 'v1/lib/ledger.rb'
 require_relative 'v1/lib/users.rb'
 require_relative 'v1/lib/pools.rb'
 require_relative 'v1/lib/projects.rb'
