@@ -1,0 +1,21 @@
+That's right. This is an emacs org-mode file.
+
+(•_•)
+( •_•)>⌐■-■
+(⌐■_■)
+
+Deal with it.
+
+* Current
+** Data entry for Project and Pool
+** BTC account creation for Project wallets
+
+* Completed
+
+* Backlog
+** Tests for ledgers model.                                            :lib:
+** Tests for ledgers end point.                                        :api:
+** Review all API calls to ensure they are scoped to current user. :api:security:
+** Rename "Revenue" wallets to "Project" wallets.                      :lib:
+** Rename "Backer" wallets to "User" wallets.                          :lib:
+** Ensure that Backer wallets cannot be used for User wallets, and vice versa. :lib:
