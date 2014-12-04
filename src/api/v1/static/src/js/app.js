@@ -1,12 +1,6 @@
 var app = angular.module('chromaApp', [], function($httpProvider) {
-    /* WTF IS ALL THIS?
-       That's right.
-       AngularJS decided to JSON encode all information sent to the server, instead of normal form data ... unlike EVERYTHING ELSE EVER BUILT ON THE INTERNET.
-       Sigh.
-       So, we're telling AngularJS how to do it for real.
-       Stolen directly from: http://victorblog.com/2012/12/20/make-angularjs-http-service-behave-like-jquery-ajax/
-    */
-
+    // fucking angular POSTs as JSON encoded data! This is a hack to clean it up, ala http://victorblog.com/2012/12/20/make-angularjs-http-service-behave-like-jquery-ajax/
+    
     // Use x-www-form-urlencoded Content-Type
     $httpProvider.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=utf-8';
     
@@ -52,32 +46,68 @@ var app = angular.module('chromaApp', [], function($httpProvider) {
     }];
 });
 
+app.factory('$api', ['$http', '$window', '$log', function($http, $window, $log) {
+    var api = {};
 
-app.controller("AuthenticationController", ['$scope', '$http', '$window', function($scope, $http, $window) {
-
-    setToken = function(tid) { $window.sessionStorage.token_id = tid; }
-    $scope.token = function() { return $window.sessionStorage.token_id; }
-
-    $scope.login = function(user) {
-	$http.post('/v1/users.json', user )
-	    .success( function(data, status, headers, config) {
-		// console.log("SUCCESS");
-		// console.log(data);
-		setToken(data.token_id);
-		location.reload(); // refresh the page with the token intact.
+    api.setToken = function( token ) { $window.sessionStorage.token_id = token; };
+    api.token = function() { return $window.sessionStorage.token_id; };
+    
+    api.login = function(user, pass) {
+	$http.post('/v1/users.json', { username: user, password: pass } )
+	    .success( function( data, status, headers, config ) {
+		$log.info("Successfully logged in as " + user);
+		api.setToken(data.token_id);
 	    })
-	    .error( function(data, status, headers, config) {
-		// console.log("ERROR");
-		// console.log(data);
-		setToken(false);
-	    });
+	    .error( function( data, status, headers, config ) {
+		api.setToken( undefined );
+	    })
+    };
+
+    api.logout = function() {
+	console.log('$api.logout()');
+	api.setToken(undefined);
+	location.reload();
+    };
+
+    return api;
+}]);
+
+app.controller("RootController", ['$api', '$scope', function($api, $scope) {
+
+    // initial state for navigation
+    $scope.currentNav = "/dashboard.html";
+    
+    $scope.nav = function( newNav ) { $scope.currentNav = newNav; };
+
+    $scope.ifNav = function( n ) {
+	console.log("currentNav == " + n);
+	if ($scope.currentNav == n) {
+	    return true;
+	}
+
+	return false;
+    }
+    
+    $scope.loggedIn = function() {
+	console.log( $api.token() );
+	if ( $api.token() && $api.token() != "undefined" ) {
+	    return true;
+	}
+	
+	return false;
     };
 
     $scope.logout = function() {
-	// console.log("Attemping logout");
-	setToken(false);
+	$api.logout();
     }
 
+}]);
+
+app.controller("AuthenticationController", ['$scope', '$api', function($scope, $api) {
+    $scope.login = function(user) {
+	console.log("wat");
+	$api.login( user.username, user.password )
+    };
 }]);
 
 app.controller("WalletController", ['$scope', '$http', '$window', function($scope, $http, $window) {
