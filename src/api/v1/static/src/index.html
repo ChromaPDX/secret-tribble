@@ -1,433 +1,244 @@
 <!DOCTYPE html>
-<html lang="en">
+<html ng-app="chromaApp">
     <head>
-	<meta charset="utf-8">
-	<title>Chroma Coin</title>
-	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
-	<meta name="apple-mobile-web-app-capable" content="yes">
-	<meta name="apple-touch-fullscreen" content="yes">
-	<meta name="description" content="Chroma Coin Royalty Management">
-	<meta name="author" content="The Chroma Team">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-	<link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400italic,700' rel='stylesheet' type='text/css'>
+	<!-- All lines containing #HOOVER# will be removed by the rake task -->
+	
+	<link rel="stylesheet" href="/css/normalize.css" type="text/css"> <!-- #HOOVER# -->
+	<link rel="stylesheet" href="/css/foundation-5.4.7.css" type="text/css"> <!-- #HOOVER# -->
+	<link rel="stylesheet" href="/css/app.css" type="text/css"> <!-- #HOOVER# -->
+	
+	<script src="/js/modernizr.js"></script> <!-- #HOOVER# -->
+	<script src="/js/angular-1.3.5.js"></script> <!-- #HOOVER# -->
+	<script src="/js/mm-foundation-tpls-0.5.1.js"></script> <!-- #HOOVER# -->
 
-	<!--[if lt IE 10]>
-        <script src="assets/js/media.match.min.js"></script>
-        <script src="assets/js/placeholder.min.js"></script>
-	<![endif]-->
+	<!-- Alright, into our custom app goodies! -->
+	<script src="/js/app.js"></script> <!-- #HOOVER# -->
 
-	<link href="assets/fonts/font-awesome/css/font-awesome.min.css" type="text/css" rel="stylesheet">
-	<link href="assets/css/styles.css" type="text/css" rel="stylesheet">
-
-	<link href="assets/plugins/jstree/dist/themes/avalon/style.min.css" type="text/css" rel="stylesheet">
-	<link href="assets/plugins/codeprettifier/prettify.css" type="text/css" rel="stylesheet">
-	<link href="assets/plugins/iCheck/skins/minimal/blue.css" type="text/css" rel="stylesheet">
-
-	<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries. Placeholdr.js enables the placeholder attribute -->
-	<!--[if lt IE 9]>
-        <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/respond.js/1.1.0/respond.min.js"></script>
-        <script type="text/javascript" src="assets/plugins/charts-flot/excanvas.min.js"></script>
-        <script type="text/javascript" src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-	<![endif]-->
-	<!-- The following CSS are included as plugins and can be removed if unused-->
-
+	<!-- #HEADER# ... this is where the condensed head JS and CSS will be put.  -->
     </head>
+    <body>
+	<div id="layout" class="row">
+	    <div id="sidebar" class="small-3 column">
+		<ul class="side-nav">
+		    <li><a ng-click="nav(dashboard)">Home</a></li>
+		    <li><a ng-click="nav(projects)">Projects</a></li>
+		    <li><a ng-click="nav(wallets)">Wallets</a></li>
+		    <li><a ng-click="logout()">Logout</a></li>
+		</ul>
+	    </div>
+	    <div class="small-9 column">
+		<div id="dashboard" class="row" ng-show="showDashboard">
+		    <div class="small-12">
+			<h3>Recent Activity</h3>
+			<ul>
+			    <li>You received a payment of xxxx for Project 1</li>
+			    <li>You've been added to Project 2!</li>
+			    <li>You invited foo@bar.com to join Project 1</li>
+			</ul>
+		    </div>
+		</div> <!-- #dashboard -->
+		
+		<div id="projects" ng-show="showProjects">
 
-    <body class="infobar-offcanvas">
-	
-	
-	<header id="topnav" class="navbar navbar-inverse navbar-fixed-top clearfix" role="banner">
-	    
-	    
-	    <a id="leftmenu-trigger" class="" data-toggle="tooltip" data-placement="right" title="Toggle Sidebar"></a>
-	    <a class="navbar-brand" href="index.html">CHROMA COIN</a>
-	    
-	    
-	</header>
-	
-	<div id="wrapper">
-            <div id="layout-static">
-		<div class="static-sidebar-wrapper sidebar-default">
-                    <div class="static-sidebar">
-			<div class="sidebar">
+		    <div id="projectSelector" class="row">
+			<div class="small-3 column">Select Project</div>
+			<div class="small-9 column">
+			    <select>
+				<option>Project 1</option>
+				<option>Project 2</option>
+			    </select>
+			</div>
+		    </div>
+
+		    <div id="projectContent" class="row">
+			<div class="small-12">
+			    <h3>Project Name</h3>
+			    <p>Project description</p>
+			    <table>
+				<tr>
+				    <th>Date</th>
+				    <th>Amount</th>
+				    <th>Total</th>
+				    <th>Attachment</th>
+				</tr>
+				<tr>
+				    <td>August 24, 2014</td>
+				    <td>8.382 BTC</td>
+				    <td><b>31.8748 BTC</b></td>
+				    <td>Download</td>
+				</tr>
+				<tr>
+				    <td>April 14, 2014</td>
+				    <td>23.4928 BTC</td>
+				    <td>23.4928 BTC</td>
+				    <td>Download</td>
+				</tr>
+			    </table>
 			    
-			    
-			    <div class="widget stay-on-collapse">
-				<div class="widget-body welcome-box tabular">
-				    <div class="tabular-row">
-					<div class="tabular-cell welcome-avatar">
-					    <a href="#"><img src="assets/demo/avatar/avatar_06.png" class="avatar"></a>
-					</div>
-					<div class="tabular-cell welcome-options">
-					    <span class="welcome-text">Welcome,</span>
-					    <a href="#" class="name">Mr. Fancy Pants</a>
-					</div>
-				    </div>
-				</div>
-			    </div>
-			    
-			    
-			    <div class="widget stay-on-collapse" id="widget-sidebar">
-				<span class="widget-heading">Explore</span>
-				<nav role="navigation" class="widget-body">
-				    <ul class="acc-menu">
-					<li><a href="coinallprojects.html"><i class="fa fa-home"></i><span>Projects</span></a></li>
-					<li><a href="coinnewproject.html"><i class="fa fa-briefcase"></i></i><span>New Project</span></a></li>
-					<li><a href="coinsendcoins.html"><i class="fa fa-sitemap"></i><span>Send Coins</span></a></li>
-				    </ul>
-				</nav>
-			    </div>
-			    
-			    
-			    
-			    
+			    <h3>Participants</h3>
+			    <table>
+				<tr>
+				    <th>Name</th>
+				    <th>Stake</th>
+				    <th>Royalties</th>
+				</tr>
+				<tr>
+				    <td><a href="mailto:peat@chroma.io">Peat Bakke</a></td>
+				    <td>45%</td>
+				    <td>14.34366 BTC</td>
+				</tr>
+				<tr>
+				    <td><a href="mailto:marcus@chroma.io">Marcus Estes</a></td>
+				    <td>30%</td>
+				    <td>9.56244 BTC</td>
+				</tr>
+				<tr>
+				    <td><a href="mailto:mike@chroma.io">Mike Merrill</a></td>
+				    <td>25%</td>
+				    <td>7.9687 BTC</td>
+				</tr>
+			    </table>
 			    
 			</div>
-                    </div>
+		    </div>
+		</div> <!-- #projects -->
+
+		<div id="wallets" class="row" ng-show="showWallets">
+		    <h2>Recent Transactions</h2>
+		    <table>
+			<tr>
+			    <th>Date</th>
+			    <th>Project</th>
+			    <th>Amount</th>
+			</tr>
+			<tr>
+			    <td>Oct 4, 2014</td>
+			    <td><i>Withdrawal</i></td>
+			    <td>(5.0 BTC)</td>
+			<tr>
+			    <td>Aug 24, 2014</td>
+			    <td>Project 1</td>
+			    <td>3.7719 BTC</td>
+			</tr>
+			<tr>
+			    <td>Apr 14, 2014</td>
+			    <td>Project 1</td>
+			    <td>10.57176 BTC</td>
+			</tr>
+		    </table>
+
+		    <h2>My Accounts</h2>
+		    <table>
+			<tr>
+			    <th>Type</th>
+			    <th>Account</th>
+			    <th>Balance</th>
+			    <th></th>
+			</tr>
+			<tr>
+			    <td>Bitcoin</td>
+			    <td>1B...03az</td>
+			    <td>9.34366 BTC</td>
+			    <td>Report &raquo;</td>
+			</tr>
+			<tr>
+			    <td>Wire</td>
+			    <td>xxxxxxxx4829</td>
+			    <td>$23.19</td>
+			    <td>Report &raquo;</td>
+			</tr>
+		    </table>
+		</div> <!-- #wallets -->
+	    </div>
+	    
+	</div>
+	
+
+	<div class="row">
+	    <div id="authentication" ng-controller="AuthenticationController">
+		<h3>Authentication</h3>
+		<div id="login" ng-hide="token()">
+		    <p>
+			To login, use <code>FIRST_NAME@test.com</code> (eg: <i>mike@test.com</i>) as your e-mail address, and <code>password</code> as your password.
+		    </p>
+		    <form>
+			<label for="username">E-Mail</label>
+			<input type="text" ng-model="user.username">
+			<br>
+			<label for="password">Password</label>
+			<input type="password" ng-model="user.password">
+			<br>
+			<button ng-click="login(user)">Login</button>
+		    </form>
+		</div>
+		<div id="logout" ng-show="token()">
+		    <button ng-click="logout()">Logout</button>
+		</div>
+	    </div>
+
+	    <div id="wallets" ng-controller="WalletController" ng-show="token()">
+		<h3>Your Wallets</h3>
+		<ul>
+		    <li ng-repeat="w in wallets"><a href ng-click="loadWallet(w.wallet_id)">{{ w.currency }} - {{ w.identifier }}</a></li>
+		</ul>
+		<div ng-show="wallet">
+		    <img ng-src="https://blockchain.info/qr?data={{ wallet.identifier }}&size=200">
+		    {{ wallet | json }}
+		</div>
+		<div ng-show="ledger.length">
+		    <h3>Wallet Income ({{ wallet_revenue / 100000000 }}) {{ wallet.currency }}</h3>
+		    <ul>
+			<li ng-repeat="l in ledger">{{ l.amount / 100000000 }} {{ wallet.currency }} on {{ l.created_at }}</li>
+		    </ul>
+		</div>
+	    </div>
+
+	    <div id="project" ng-controller="ProjectController" ng-show="token()">
+		<h3>Your Projects</h3>
+		<ul>
+		    <li ng-repeat="p in projects"><a href ng-click="loadProject(p.project_id)">{{ p.name }}</a></li>
+		    <li>
+			<form>
+			    <label for="project_id">Project ID</label>
+			    <input type="text" ng-model="form.project_id">
+			    <button ng-click="loadProject(form.project_id)">Load</button>
+			</form>
+		    </li>
+		</ul>
+
+		<div ng-show="project">
+		    {{ project | json }}
 		</div>
 		
+		<div ng-show="users.length">
+		    <h3>Backers</h3>
+		    <ul>
+			<li ng-repeat="user in users">{{ user.name }} - {{ (pool.splits[user.user_id] * 100) | number:0 }}%</li>
+		    </ul>
+		</div>
+
+		<div ng-show="project_wallet">
+		    <h3>Project Wallet</h3>
+		    {{ project_wallet | json }}
+		</div>
+
+		<div ng-show="project_ledger.length">
+		    <h3>Project Revenue ({{ project_revenue / 100000000 }}) {{ project_wallet.currency }}</h3>
+		    <ul>
+			<li ng-repeat="l in project_ledger">{{ l.amount / 100000000 }} {{ project_wallet.currency }} on {{ l.created_at }}</li>
+		    </ul>
+		</div>
 		
-		<div class="static-content-wrapper">
-                    <div class="static-content">
-			<div class="page-content">
-                            <div class="page-heading">            
-				<h1>New Project</h1>
-				
-                            </div>
-                            
-                            <div class="container-fluid">
-				
-				<div class="row">
-				    <div class="col-sm-12">
-					
-					<div class="panel panel-midnightblue">
-					    <div class="panel-heading">
-						<h2>Project Info</h2>
-						
-					    </div>
-					    <div class="panel-body">
-						<div class="tab-content">
-						    <div class="tab-pane active" id="horizontal-form">
-							<form class="form-horizontal">
-							    <div class="form-group">
-								<label for="focusedinput" class="col-sm-2 control-label">Focused Input</label>
-								<div class="col-sm-8">
-								    <input type="text" class="form-control" id="focusedinput" placeholder="Default Input">
-								</div>
-								<div class="col-sm-2">
-								    <p class="help-block">Your help text!</p>
-								</div>
-							    </div>
-							    <div class="form-group">
-								<label for="disabledinput" class="col-sm-2 control-label">Disabled Input</label>
-								<div class="col-sm-8">
-								    <input disabled type="text" class="form-control" id="disabledinput" placeholder="Disabled Input">
-								</div>
-							    </div>
-							    <div class="form-group">
-								<label for="inputPassword" class="col-sm-2 control-label">Password</label>
-								<div class="col-sm-8">
-								    <input type="password" class="form-control" id="inputPassword" placeholder="Password">
-								</div>
-							    </div>
-							    <div class="form-group">
-								<label for="checkbox" class="col-sm-2 control-label">Checkbox</label>
-								<div class="col-sm-8">
-								    <div class="checkbox block"><label><input type="checkbox"> Unchecked</label></div>
-								    <div class="checkbox block"><label><input type="checkbox" checked> Checked</label></div>
-								    <div class="checkbox block"><label><input type="checkbox" disabled> Disabled Unchecked</label></div>
-								    <div class="checkbox block"><label><input type="checkbox" disabled checked> Disabled Checked</label></div>
-								</div>
-							    </div>
-							    <div class="form-group">
-								<label for="checkbox" class="col-sm-2 control-label">Checkbox Inline</label>
-								<div class="col-sm-8">
-								    <div class="checkbox-inline"><label><input type="checkbox"> Unchecked</label></div>
-								    <div class="checkbox-inline"><label><input type="checkbox" checked> Checked</label></div>
-								    <div class="checkbox-inline"><label><input type="checkbox" disabled> Disabled Unchecked</label></div>
-								    <div class="checkbox-inline"><label><input type="checkbox" disabled checked> Disabled Checked</label></div>
-								</div>
-							    </div>
-							    <div class="form-group">
-								<label for="selector1" class="col-sm-2 control-label">Dropdown Select</label>
-								<div class="col-sm-8"><select name="selector1" id="selector1" class="form-control">
-								    <option>Lorem ipsum dolor sit amet.</option>
-								    <option>Dolore, ab unde modi est!</option>
-								    <option>Illum, fuga minus sit eaque.</option>
-								    <option>Consequatur ducimus maiores voluptatum minima.</option>
-								</select></div>
-							    </div>
-							    <div class="form-group">
-								<label class="col-sm-2 control-label">Multiple Select</label>
-								<div class="col-sm-8">
-								    <select multiple="" class="form-control">
-									<option>Option 1</option>
-									<option>Option 2</option>
-									<option>Option 3</option>
-									<option>Option 4</option>
-									<option>Option 5</option>
-								    </select>
-								</div>
-							    </div>
-							    <!-- <div class="form-group">
-							    <label for="selector1" class="col-sm-2 control-label">Multiple Select (Custom Icon)</label>
-							    <div class="col-sm-8">
-							    <div class="iSelect">
-							    <select name="selector2" id="selector2" class="form-control">
-							    <option>Lorem ipsum dolor sit amet.</option>
-							    <option>Dolore, ab unde modi est!</option>
-							    <option>Illum, fuga minus sit eaque.</option>
-							    <option>Consequatur ducimus maiores voluptatum minima.</option>
-							    </select>
-							    </div>
-							    </div>
-							    </div> -->
-							    <div class="form-group">
-								<label for="txtarea1" class="col-sm-2 control-label">Textarea</label>
-								<div class="col-sm-8"><textarea name="txtarea1" id="txtarea1" cols="50" rows="4" class="form-control"></textarea></div>
-							    </div>
-							    <div class="form-group">
-								<label for="radio" class="col-sm-2 control-label">Radio</label>
-								<div class="col-sm-8">
-								    <div class="radio block"><label><input type="radio"> Unchecked</label></div>
-								    <div class="radio block"><label><input type="radio" checked> Checked</label></div>
-								    <div class="radio block"><label><input type="radio" disabled> Disabled Unchecked</label></div>
-								    <div class="radio block"><label><input type="radio" disabled checked> Disabled Checked</label></div>
-								</div>
-							    </div>
-							    <div class="form-group">
-								<label for="radio" class="col-sm-2 control-label">Radio Inline</label>
-								<div class="col-sm-8">
-								    <div class="radio-inline"><label><input type="radio"> Unchecked</label></div>
-								    <div class="radio-inline"><label><input type="radio" checked> Checked</label></div>
-								    <div class="radio-inline"><label><input type="radio" disabled> Disabled Unchecked</label></div>
-								    <div class="radio-inline"><label><input type="radio" disabled checked> Disabled Checked</label></div>
-								</div>
-							    </div>
-							    <div class="form-group">
-								<label for="smallinput" class="col-sm-2 control-label label-input-sm">Small Input</label>
-								<div class="col-sm-8">
-								    <input type="text" class="form-control input-sm" id="smallinput" placeholder="Small Input">
-								</div>
-							    </div>
-							    <div class="form-group">
-								<label for="mediuminput" class="col-sm-2 control-label">Medium Input</label>
-								<div class="col-sm-8">
-								    <input type="text" class="form-control" id="mediuminput" placeholder="Medium Input">
-								</div>
-							    </div>
-							    <div class="form-group">
-								<label for="largeinput" class="col-sm-2 control-label label-input-lg">Large Input</label>
-								<div class="col-sm-8">
-								    <input type="text" class="form-control input-lg" id="largeinput" placeholder="Large Input">
-								</div>
-							    </div>
-							    <!-- <div class="form-group">
-							    <label class="col-md-2 control-label label-input-sm">Small Select</label>
-							    <div class="col-md-8">
-							    <select class="form-control input-sm">
-							    <option>Option 1</option>
-							    <option>Option 2</option>
-							    <option>Option 3</option>
-							    <option>Option 4</option>
-							    <option>Option 5</option>
-							    </select>
-							    </div>
-							    </div>
-							    <div class="form-group">
-							    <label class="col-md-2 control-label label-input-lg">Large Select</label>
-							    <div class="col-md-8">
-							    <select class="form-control input-lg">
-							    <option>Option 1</option>
-							    <option>Option 2</option>
-							    <option>Option 3</option>
-							    <option>Option 4</option>
-							    <option>Option 5</option>
-							    </select>
-							    </div>
-							    </div> -->
-							</form>
-						    </div>
+		<div ng-show="pool">
+		    <h3>Pool</h3>
+		    {{ pool | json }}
+		</div>
 
-						</div>
-
-						<div class="panel-footer">
-						    <div class="row">
-							<div class="col-sm-8 col-sm-offset-2">
-							    <button class="btn-primary btn">Submit</button>
-							    <button class="btn-default btn">Cancel</button>
-							</div>
-						    </div>
-						</div>
-					    </div>
-					</div>
-				    </div>
-				</div>
-
-
-
-
-
-
-
-				<div class="row">
-				    <div class="col-xs-12">
-					<div class="panel panel-default">
-					    <div class="panel-heading"><h2>Validation States</h2></div>
-					    <div class="panel-body pb0">
-						<p class="mb20">Validation states with icons in left and right</p>
-						<div class="row">
-						    <div class="col-md-6">
-
-							<form>
-							    <div class="form-group">
-								<div class="input-icon right">
-								    <i class="fa fa-fw fa-info-circle tooltips" data-original-title="Email address" data-container="body"></i>
-								    <input type="text" class="form-control" placeholder="Email address">
-								</div>
-							    </div>
-							    <div class="form-group has-success">
-								<div class="input-icon right">
-								    <i class="fa fa-fw fa-check-circle tooltips" data-original-title="You look OK!" data-container="body"></i>
-								    <input type="text" class="form-control" placeholder="Success!">
-								</div>
-							    </div>
-							    <div class="form-group has-warning">
-								<div class="input-icon right">
-								    <i class="fa fa-fw fa-warning tooltips" data-original-title="please provide an email" data-container="body"></i>
-								    <input type="text" class="form-control" placeholder="Warning!">
-								</div>
-							    </div>
-							    <div class="form-group has-error">
-								<div class="input-icon right">
-								    <i class="fa fa-fw fa-exclamation-circle tooltips" data-original-title="please write a valid email" data-container="body"></i>
-								    <input type="text" class="form-control" placeholder="Error!">
-								</div>
-							    </div>
-							</form>
-
-						    </div>
-						    <div class="col-md-6">
-
-							<form>
-							    <div class="form-group">
-								<div class="input-icon left">
-								    <i class="fa fa-fw fa-info-circle tooltips" data-original-title="Email address" data-container="body"></i>
-								    <input type="text" class="form-control" placeholder="Email address">
-								</div>
-							    </div>
-							    <div class="form-group has-success">
-								<div class="input-icon left">
-								    <i class="fa fa-fw fa-check-circle tooltips" data-original-title="You look OK!" data-container="body"></i>
-								    <input type="text" class="form-control" placeholder="Success!">
-								</div>
-							    </div>
-							    <div class="form-group has-warning">
-								<div class="input-icon left">
-								    <i class="fa fa-fw fa-warning tooltips" data-original-title="please provide an email" data-container="body"></i>
-								    <input type="text" class="form-control" placeholder="Warning!">
-								</div>
-							    </div>
-							    <div class="form-group has-error">
-								<div class="input-icon left">
-								    <i class="fa fa-fw fa-exclamation-circle tooltips" data-original-title="please write a valid email" data-container="body"></i>
-								    <input type="text" class="form-control" placeholder="Error!">
-								</div>
-							    </div>
-							</form>
-
-						    </div>
-						</div>
-					    </div>
-					</div>
-				    </div>
-				</div>
-
-				<div class="modal fade" id="modal-form" tabindex="-1" role="dialog" aria-hidden="true">
-				    <div class="modal-dialog">
-					<div class="modal-content">
-					    <div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-						<h4 class="modal-title" id="myModalLabel">Sign in</h4>
-					    </div>
-					    <div class="modal-body">
-						<div class="row">
-						    <div class="col-xs-6">
-							<p>Sign in to meet your friends!</p>
-							<form>
-							    <div class="form-group">
-								<label for="">Email</label>
-								<input type="email" class="form-control" placeholder="email@address.com">
-							    </div>
-							    <div class="form-group">
-								<label for="">Password</label>
-								<input type="password" class="form-control" placeholder="Enter Password">
-							    </div>
-							    <div class="clearfix">
-								<div class="checkbox pull-left">
-								    <label for=""><input type="checkbox"> Remember Me</label>
-								</div>
-								<a href="#" class="btn btn-success pull-right">Log In</a>
-							    </div>
-							</form>
-						    </div>
-						    <div class="col-xs-6">
-							<h4>Not a Member?</h4>
-							<p>You can create an account <a href="#">here</a>.</p>
-							<p>OR</p>
-							<a href="#" class="btn btn-primary btn-block"><i class="fa fa-facebook pull-left"></i> Sign in with Facebook</a>
-							<a href="#" class="btn btn-info btn-block"><i class="fa fa-twitter pull-left"></i> Sign in with Twitter</a>
-							<a href="#" class="btn btn-danger btn-block"><i class="fa fa-google-plus pull-left"></i> Sign in with Google+</a>
-						    </div>
-						</div>
-					    </div>
-					</div>
-				    </div>
-				</div>
-
-
-
-
-                            </div> <!-- .container-fluid -->
-                        </div> <!-- #page-content -->
-                    </div>
-                    <footer role="contentinfo">
-			<div class="clearfix">
-			    <ul class="list-unstyled list-inline pull-left">
-				<li><h6 style="margin: 0;"> &copy; 2014 Chroma</h6></li>
-			    </ul>
-			    <button class="pull-right btn btn-link btn-xs hidden-print" id="back-to-top"><i class="fa fa-arrow-up"></i></button>
-			</div>
-		    </footer>
-                </div>
-            </div>
-        </div>
-
-
+	    </div>
 	</div>
-	</div>
-        </div>
 
-	
-	<!-- Load site level scripts -->
-
-	<script src="assets/js/jquery-1.10.2.min.js"></script> 				<!-- Load jQuery -->
-	<script src="assets/js/jqueryui-1.9.2.min.js"></script> 		        <!-- Load jQueryUI -->
-	<script src="assets/js/bootstrap.min.js"></script> 				<!-- Load Bootstrap -->
-	<script src="assets/plugins/jquery-slimscroll/jquery.slimscroll.js"></script> 	<!-- Slimscroll for custom scrolls -->
-	<script src="assets/plugins/sparklines/jquery.sparklines.min.js"></script>  	<!-- Sparkline -->
-	<script src="assets/plugins/jstree/dist/jstree.min.js"></script>  		<!-- jsTree -->
-	<script src="assets/plugins/codeprettifier/prettify.js"></script> 		<!-- Code Prettifier  -->
-	<script src="assets/plugins/bootstrap-switch/bootstrap-switch.js"></script> 	<!-- Swith/Toggle Button -->
-	<script src="assets/plugins/bootstrap-tabdrop/js/bootstrap-tabdrop.js"></script>  <!-- Bootstrap Tabdrop -->
-	<script src="assets/plugins/iCheck/icheck.min.js"></script>     		<!-- iCheck -->
-	<script src="assets/js/enquire.min.js"></script> 				<!-- Enquire for Responsiveness -->
-	<script src="assets/plugins/bootbox/bootbox.js"></script>			<!-- BOOTBOX -->
-	<script src="assets/js/application.js"></script>
-	<script src="assets/demo/demo.js"></script>
-	<script src="assets/demo/demo-switcher.js"></script>
-	<script src="assets/plugins/simpleWeather/jquery.simpleWeather.min.js"></script> 
-
+	<!-- #FOOTER# -->
     </body>
 </html>

@@ -14,6 +14,8 @@ gem 'sinatra'
 gem 'unicorn' # for production
 gem 'shotgun' # for development
 
+gem "nokogiri"
+
 gem 'github-markdown'
 gem 'github-markup', git: 'https://github.com/github/markup.git'
 gem 'bcrypt'    # for password hashing

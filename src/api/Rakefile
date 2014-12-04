@@ -1,0 +1,73 @@
+require 'tmpdir'
+require 'nokogiri'
+
+TARGET_DIR = File.join( File.dirname(__FILE__), 'v1', 'static', 'public' )
+SRC_DIR = File.join( File.dirname(__FILE__), 'v1', 'static', 'src' )
+
+task :default => :build
+
+desc 'Builds the static site'
+task :build do
+  start_time = Time.now
+
+  # reads the list of files out of SRC_DIR and appends them together
+  def combine( path_list )
+    path_list
+      .collect { |p| File.read( File.join(SRC_DIR, p) ) }
+      .join("\n\n")
+  end
+
+  # shortcut for writing out files, ensures directories exist
+  def write( path, data )
+    FileUtils.mkdir_p( File.dirname( path ) )
+    File.open( path, 'w' ) do |f|
+      f.write( data )
+    end
+    
+    puts "#{File.basename path} => #{data.length}"
+  end
+  
+  # set up the temp dir. If this all crashes, the temp dir will be retained.
+  TMP_DIR = Dir.mktmpdir
+  puts "Building in #{TMP_DIR} ..."
+
+  # clean out the target dir
+  FileUtils.rm_rf TARGET_DIR
+  
+  begin
+    doc = Nokogiri::HTML(File.open( File.join(SRC_DIR, 'index.html')))
+
+    # find the CSS and JS files
+    header_css = doc.css("head link").collect { |l| l.attr('href') }
+    header_js = doc.css("head script").collect { |s| s.attr('src') }
+
+    write( File.join( TMP_DIR, "css", "header.css" ), combine( header_css ) )
+    write( File.join( TMP_DIR, "js", "header.js" ), combine( header_js ) )
+
+    # strip all the #HOOVER# lines out of index, and replace #HEADER# with links to the CSS and JS.
+    index_html = ""
+    File.open( File.join(SRC_DIR, "index.html") ).each do |line|
+      next if line =~ /#HOOVER#/
+      if line =~ /#HEADER#/
+        index_html << '<link href="/css/header.css" rel="stylesheet" type="text/css">' << "\n"
+        index_html << '<script src="/js/header.js"></script>' << "\n"
+        next
+      end
+
+      index_html << line
+    end
+
+    # write out the new index
+    write( File.join( TMP_DIR, "index.html" ), index_html )
+
+    # Move all files over to the target!
+    FileUtils.cp_r TMP_DIR, TARGET_DIR
+
+    puts "Cleaning up #{TMP_DIR} ..."
+    FileUtils.rm_rf TMP_DIR
+  rescue => e
+    puts e
+  end
+    
+    puts "Built in #{Time.now - start_time}s."
+end
