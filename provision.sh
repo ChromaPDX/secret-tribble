@@ -36,6 +36,9 @@ sudo -H -u postgres psql -c "create user vagrant password 'vagrant'"
 # git
 apt-get install -y git
 
+# nodejs (for building static site, not serving)
+apt-get install -y nodejs
+
 # clean up abandoned packages
 apt-get autoremove -y
 

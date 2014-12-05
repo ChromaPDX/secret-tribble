@@ -1,5 +1,7 @@
 require 'tmpdir'
 require 'nokogiri'
+require 'uglifier'
+require 'cssminify'
 
 TARGET_DIR = File.join( File.dirname(__FILE__), 'v1', 'static', 'public' )
 SRC_DIR = File.join( File.dirname(__FILE__), 'v1', 'static', 'src' )
@@ -24,33 +26,49 @@ task :build do
       f.write( data )
     end
     
-    puts "#{File.basename path} => #{data.length}"
+    data.length
   end
   
   # set up the temp dir. If this all crashes, the temp dir will be retained.
   TMP_DIR = Dir.mktmpdir
   puts "Building in #{TMP_DIR} ..."
 
-  # clean out the target dir
-  FileUtils.rm_rf TARGET_DIR
-  
   begin
+    profile = {}
+    
     doc = Nokogiri::HTML(File.open( File.join(SRC_DIR, 'index.html')))
 
     # find the CSS and JS files
     header_css = doc.css("head link").collect { |l| l.attr('href') }
     header_js = doc.css("head script").collect { |s| s.attr('src') }
 
-    write( File.join( TMP_DIR, "css", "header.css" ), combine( header_css ) )
-    write( File.join( TMP_DIR, "js", "header.js" ), combine( header_js ) )
+    header_css_blob = combine( header_css )
+    header_js_blob = combine( header_js )
 
+    if ENV['COMPRESS']
+      # minified CSS and JS
+      profile[:header_js] = write( File.join( TMP_DIR, "js", "header.min.js" ), Uglifier.new.compile( header_js_blob ) )
+      profile[:header_css] = write( File.join( TMP_DIR, "css", "header.min.css" ), CSSminify.compress( header_css_blob ) )
+    else
+      # full size CSS and JS
+      profile[:header_css] = write( File.join( TMP_DIR, "css", "header.css" ), header_css_blob )
+      profile[:header_js] = write( File.join( TMP_DIR, "js", "header.js" ), header_js_blob )
+    end
+    
     # strip all the #HOOVER# lines out of index, and replace #HEADER# with links to the CSS and JS.
     index_html = ""
     File.open( File.join(SRC_DIR, "index.html") ).each do |line|
       next if line =~ /#HOOVER#/
       if line =~ /#HEADER#/
-        index_html << '<link href="/css/header.css" rel="stylesheet" type="text/css">' << "\n"
-        index_html << '<script src="/js/header.js"></script>' << "\n"
+        if ENV['COMPRESS']
+          css_file = "/css/header.min.css"
+          js_file = "/css/header.min.js"
+        else
+          css_file = "/css/header.css"
+          js_file = "/css/header.js"
+        end
+        index_html << "<link href=\"#{css_file}\" rel=\"stylesheet\" type=\"text/css\">" << "\n"
+        index_html << "<script src=\"#{js_file}\"></script>" << "\n"
         next
       end
 
@@ -58,8 +76,20 @@ task :build do
     end
 
     # write out the new index
-    write( File.join( TMP_DIR, "index.html" ), index_html )
+    profile[:index] = write( File.join( TMP_DIR, "index.html" ), index_html )
 
+    # total up the bytes
+    profile[:total] = profile.each_value.reduce :+
+    
+    puts "index => #{profile[:index]}"
+    puts "header js => #{profile[:header_js]}"
+    puts "header css => #{profile[:header_css]}"
+    puts "combined => #{profile[:total]}"
+    puts "gzip est => #{profile[:total] / 2}"
+    
+    # clean out the target dir
+    FileUtils.rm_rf TARGET_DIR
+  
     # Move all files over to the target!
     FileUtils.cp_r TMP_DIR, TARGET_DIR
 
