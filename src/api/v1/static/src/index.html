@@ -4,17 +4,26 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 	<!-- All lines containing #HOOVER# will be removed by the rake task -->
-	
+
+	<!-- CSS dependencies -->
 	<link rel="stylesheet" href="/css/normalize.css" type="text/css"> <!-- #HOOVER# -->
 	<link rel="stylesheet" href="/css/foundation-5.4.7.css" type="text/css"> <!-- #HOOVER# -->
-	<link rel="stylesheet" href="/css/app.css" type="text/css"> <!-- #HOOVER# -->
-	
+
+	<!-- #HOOVER# JS dependencies. -->
 	<script src="/js/modernizr.js"></script> <!-- #HOOVER# -->
 	<script src="/js/angular-1.3.5.js"></script> <!-- #HOOVER# -->
 	<script src="/js/mm-foundation-tpls-0.5.1.js"></script> <!-- #HOOVER# -->
 
 	<!-- Alright, into our custom app goodies! -->
+	<link rel="stylesheet" href="/css/app.css" type="text/css"> <!-- #HOOVER# -->
+
 	<script src="/js/app.js"></script> <!-- #HOOVER# -->
+	<script src="/js/api.js"></script> <!-- #HOOVER# -->
+	<script src="/js/authentication.js"></script> <!-- #HOOVER# -->
+	<script src="/js/dashboard.js"></script> <!-- #HOOVER# -->
+	<script src="/js/projects.js"></script> <!-- #HOOVER# -->
+	<script src="/js/root.js"></script> <!-- #HOOVER# -->
+	<script src="/js/wallet.js"></script> <!-- #HOOVER# -->
 
 	<!-- #HEADER# ... this is where the condensed head JS and CSS will be put.  -->
     </head>
@@ -50,26 +59,23 @@
 	    <div class="small-9 column" ng-include src="currentNav"></div>
 	    
 	    <script type="text/ng-template" id="/dashboard.html">
-		<div id="dashboard" class="row">
+		<div id="dashboard" class="row" ng-controller="DashboardController">
 		    <div class="small-12">
 			<h3>Recent Activity</h3>
 			<ul>
-			    <li>You received a payment of xxxx for Project 1</li>
-			    <li>You've been added to Project 2!</li>
-			    <li>You invited foo@bar.com to join Project 1</li>
+			    <li ng-repeat="e in events">{{ e }}</li>
 			</ul>
 		    </div>
 		</div> <!-- #dashboard -->
 	    </script>
 
 	    <script type="text/ng-template" id="/projects.html">
-		<div id="projects">
+		<div id="projects" ng-controller="ProjectController">
 		    <div id="projectSelector" class="row">
 			<div class="small-3 column">Select Project</div>
 			<div class="small-9 column">
 			    <select>
-				<option>Project 1</option>
-				<option>Project 2</option>
+				<option ng-repeat="p in projects">{{ p.name }}</option>
 			    </select>
 			</div>
 		    </div>
