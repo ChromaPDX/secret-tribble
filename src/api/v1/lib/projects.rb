@@ -25,3 +25,19 @@ get '/v1/projects.json' do
 
   invalid_credentials!
 end
+
+post '/v1/projects.json' do
+  if require_token!
+    name = params[:name]
+    description = projects[:description]
+
+    if name and description
+      p = Project.new( name: name )
+    else
+      @errors.add("A new project requires a name and description")
+      return
+    end
+  end
+
+  invalid_credentials!
+end

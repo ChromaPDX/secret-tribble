@@ -12,15 +12,27 @@ STATIC_PATH = File.join( File.dirname(__FILE__), 'v1', 'static', 'public' )
 STATIC_SRC_PATH = File.join( File.dirname(__FILE__), 'v1', 'static', 'src' )
 
 set :views, VIEW_PATH
-set :public_folder, STATIC_PATH
+# set :public_folder, STATIC_PATH
 
 # UTILITY METHODS ------------------------------------------------------------
+
+def password_protected!
+  return if password_authorized?
+  headers['WWW-Authenticate'] = 'Basic realm="Restricted Area"'
+  halt 401, "Not authorized\n"
+end
+
+def password_authorized?
+  @auth ||=  Rack::Auth::Basic::Request.new(request.env)
+  @auth.provided? and @auth.basic? and @auth.credentials and @auth.credentials == ['chromadmin', 't0ps3kr!t']
+end
 
 # creates a documentation path for the given resource.
 # This API is self documenting!
 def doc( path )
   get "#{path}.html" do
-
+    password_protected!
+    
     endpoint = path.split('/').last
     
     template_path = File.join( VIEW_PATH, "#{endpoint}.md" )
@@ -122,7 +134,7 @@ end
 if development?
   set :show_exceptions, false
   error do
-    puts "\n --- \n #{env['sinatra.error'].error}\n#{env['sinatra.error'].backtrace.join("\n\t")} \n"
+    puts "\n --- \n #{env['sinatra.error'].inspect}\n#{env['sinatra.error'].backtrace.join("\n\t")} \n"
   end
 end
 
@@ -130,9 +142,26 @@ end
 # ROOT ---------------------------------------------------------------------
 
 get '/' do
+  password_protected!
   '<img style="width: 100%; height: 100%" src="http://img4.wikia.nocookie.net/__cb20130627171445/safari-zone/images/c/c1/Soon-horse.jpg">'
 end
 
+get '/index.html' do
+  password_protected!
+  File.read( File.join( STATIC_PATH, 'index.html' ) )
+end
+
+get '/css/:file' do
+  password_protected!
+  content_type "text/css"
+  File.read( File.join( STATIC_PATH, 'css', params[:file] ) )
+end
+
+get '/js/:file' do
+  password_protected!
+  content_type "application/javascript"
+  File.read( File.join( STATIC_PATH, 'js', params[:file] ) ) 
+end
 
 # RESOURCES ----------------------------------------------------------------
 
