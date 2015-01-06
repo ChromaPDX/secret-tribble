@@ -153,7 +153,6 @@ get '/index.html' do
 end
 
 get '/css/:file' do
-  password_protected!
   content_type "text/css"
   File.read( File.join( STATIC_PATH, 'css', params[:file] ) )
 end
