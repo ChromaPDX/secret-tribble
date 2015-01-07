@@ -12,7 +12,7 @@ STATIC_PATH = File.join( File.dirname(__FILE__), 'v1', 'static', 'public' )
 STATIC_SRC_PATH = File.join( File.dirname(__FILE__), 'v1', 'static', 'src' )
 
 set :views, VIEW_PATH
-# set :public_folder, STATIC_PATH
+set :public_folder, STATIC_SRC_PATH
 
 # UTILITY METHODS ------------------------------------------------------------
 
@@ -142,14 +142,14 @@ end
 
 # ROOT ---------------------------------------------------------------------
 
+# get '/' do
+#   password_protected!
+#   '<img style="width: 100%; height: 100%" src="http://img4.wikia.nocookie.net/__cb20130627171445/safari-zone/images/c/c1/Soon-horse.jpg">'
+# end
+
 get '/' do
   password_protected!
-  '<img style="width: 100%; height: 100%" src="http://img4.wikia.nocookie.net/__cb20130627171445/safari-zone/images/c/c1/Soon-horse.jpg">'
-end
-
-get '/index.html' do
-  password_protected!
-  File.read( File.join( STATIC_PATH, 'index.html' ) )
+  File.read( File.join( STATIC_SRC_PATH, 'index.html' ) )
 end
 
 get '/css/:file' do
