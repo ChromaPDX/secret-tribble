@@ -43,7 +43,26 @@ describe '/v1/projects.json' do
   end
 
   
-  it "POST should require a valid token"
+  it "POST should require a valid token" do
+    post '/v1/projects.json'
+    check_headers nil, 401
+    check_errors nil, 'Invalid credentials.'
+  end 
+
+  it "POST should create a new project" do
+    post '/v1/projects.json', token_id: @token_id, name: "yolo", description: "description", pool_id: @pool.pool_id
+    check_headers
+    j = get_json
+
+    expect( j['project_id'] ).to be_a(String)
+    expect( j['name'] ).to eq("yolo")
+    # expect( j['description'] ).to eq("description") # TODO
+    expect( j['pool_id'] ).to eq(@pool.pool_id)
+
+    p = Project.get( j['project_id'] )
+    expect( j['name']).to eq(p.name)
+    expect( j['pool_id']).to eq(p.pool_id)
+  end
 
   it "GET and POST should be constrained to a user associated with the project!"
 
