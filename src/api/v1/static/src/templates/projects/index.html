@@ -1,0 +1,18 @@
+<h1>Projects</h1>
+
+<div class="row">
+  <div class="large-12 columns">
+    <a ui-sref="projects.new" class="button radius">Create Project</a>
+  </div>
+
+  <div class="large-12 columns">
+    <label> Select Project
+      <select>
+        <option ng-repeat="project in projects" value="{{project.id}}">
+          {{project.name}}
+        </option>
+      </select>
+    </label>
+  </div>
+
+</div>

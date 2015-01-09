@@ -69,6 +69,22 @@ app.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $u
       parent: 'authenticated',
       templateUrl: 'templates/dashboard.html'
     })
+    .state('projects', {
+      abstract: true,
+      url: '/projects',
+      parent: 'authenticated',
+      template: '<ui-view/>'
+    })
+    .state('projects.index', {
+      url: '',
+      templateUrl: 'templates/projects/index.html',
+      controller: 'ProjectsController'
+    })
+    .state('projects.new', {
+      url: '/new',
+      templateUrl: 'templates/projects/new.html',
+      controller: 'ProjectsController'
+    })
 }
 ]);
 

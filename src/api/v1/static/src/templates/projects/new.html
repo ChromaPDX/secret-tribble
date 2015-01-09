@@ -1,0 +1,70 @@
+<h1>New Project</h1>
+
+<div class="row">
+  <div class="large-12 columns">
+    <h3>Contributors</h3>
+
+    <div ng-show="errors">{{errors}}</div>
+    <table>
+      <thead>
+        <tr>
+          <th width="200">Email</th>
+          <th width="200">Percent</th>
+          <th width="300"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="split in splits track by $index">
+          <td>{{split.email}}</td>
+          <td>{{split.percent}}%</td>
+          <td>
+            <a ng-click="editSplit($index)" class="button tiny">Edit</a>
+            <a ng-click="removeSplit($index)" class="button tiny">Delete</a>
+          </td>
+        </tr>
+        <form name="splitForm">
+          <tr>
+            <td>
+              <input type="email" ng-model="split.email">
+            </td>
+            <td>
+              <input type="range" min="0" max="100" step="1" ng-model="split.percent">
+              {{ split.percent }}%
+            </td>
+            <td>
+              <input type="button" value="Add" class="button tiny" ng-click="addSplit()" ng-hide="isEditing()"/>
+              <input type="button" value="Update" class="button tiny" ng-click="updateSplit()" ng-show="isEditing()"/>
+              <input type="button" value="Cancel" class="button tiny" ng-click="cancelEditing()" ng-show="isEditing()"/>
+            </td>
+          </tr>
+        </form>
+      </tbody>
+    </table>
+
+    <a ng-click="createPool()" class="button radius">Create Pool</a>
+  </div>
+</div>
+
+<hr>
+
+<form>
+  <div class="row">
+    <div class="large-12 columns" ng-show="project_errors">{{project_errors}}</div>
+
+    <div class="large-12 columns">
+      <label> Project Name
+        <input type="text" placeholder="Project Name" ng-model="project.name" />
+      </label>
+    </div>
+
+    <div class="large-12 columns">
+      <label> Description
+        <textarea type="text" placeholder="Description" ng-model="project.description" rows="5"></textarea>
+      </label>
+    </div>
+
+    <div class="large-12 columns">
+      <a ng-click="createProject()" class="button radius">Create Project</a>
+    </div>
+  </div>
+</form>

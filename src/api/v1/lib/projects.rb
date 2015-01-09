@@ -29,7 +29,7 @@ end
 post '/v1/projects.json' do
   if require_token!
     name = params[:name]
-    description = projects[:description]
+    description = params[:description]
 
     if name and description
       p = Project.new( name: name )

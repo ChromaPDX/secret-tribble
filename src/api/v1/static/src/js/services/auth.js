@@ -1,4 +1,4 @@
-app.factory('$auth', ['$window', '$log', '$state', 'Restangular', function($window, $log, $state, Restangular) {
+app.factory('$auth', ['$window', '$state', 'Restangular', function($window, $log, $state, Restangular) {
     var auth = {};
 
     auth.setToken = function( token ) {
@@ -14,7 +14,6 @@ app.factory('$auth', ['$window', '$log', '$state', 'Restangular', function($wind
 
       users.post({ username: user, password: pass })
         .then(function(data) {
-          $log.info("Successfully logged in as " + user);
           auth.setToken(data.token_id);
           $state.go('dashboard');
         })
@@ -24,7 +23,6 @@ app.factory('$auth', ['$window', '$log', '$state', 'Restangular', function($wind
     };
 
     auth.logout = function() {
-      console.log('$auth.logout()');
       auth.setToken(undefined);
       $state.go('landing');
     };
