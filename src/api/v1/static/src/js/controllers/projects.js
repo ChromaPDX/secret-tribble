@@ -19,7 +19,10 @@ app.controller("ProjectsController", ['$scope', '$projects', '$pools', function(
   }
 
   var splitTotal = function() {
-    var total = parseInt( $scope.split.percent );
+    var total = 0;
+    if (!$scope.isEditing()) {
+      total = parseInt($scope.split.percent);
+    }
     for (i = 0; i < $scope.splits.length; i++) {
         var pct = parseInt($scope.splits[i].percent);
         total = total + pct;

@@ -1,4 +1,4 @@
-app.factory('$auth', ['$window', '$state', 'Restangular', function($window, $log, $state, Restangular) {
+app.factory('$auth', ['$window', '$state', 'Restangular', function($window, $state, Restangular) {
     var auth = {};
 
     auth.setToken = function( token ) {
