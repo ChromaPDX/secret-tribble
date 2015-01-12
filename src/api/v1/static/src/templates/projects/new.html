@@ -4,7 +4,6 @@
   <div class="large-12 columns">
     <h3>Contributors</h3>
 
-    <div ng-show="errors">{{errors}}</div>
     <table>
       <thead>
         <tr>
@@ -49,8 +48,6 @@
 
 <form>
   <div class="row">
-    <div class="large-12 columns" ng-show="project_errors">{{project_errors}}</div>
-
     <div class="large-12 columns">
       <label> Project Name
         <input type="text" placeholder="Project Name" ng-model="project.name" />

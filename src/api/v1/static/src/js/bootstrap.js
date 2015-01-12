@@ -92,3 +92,7 @@ app.config(function(RestangularProvider) {
    RestangularProvider.setBaseUrl('/v1');
    RestangularProvider.setRequestSuffix('.json');
 });
+
+app.run(function($rootScope) {
+    $rootScope.alerts = [];
+})
