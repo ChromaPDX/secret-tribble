@@ -32,7 +32,7 @@ post '/v1/projects.json' do
     description = params[:description]
 
     if name and description
-      p = Project.new( name: name )
+      p = Project.new( name: name, user_id: @user.user_id )
     else
       @errors.add("A new project requires a name and description")
       return
