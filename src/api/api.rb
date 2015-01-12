@@ -23,7 +23,7 @@ def password_protected!
 end
 
 def password_authorized?
-  return true unless ENV['CHROMA_ENV'] == 'test'
+  return true unless ENV['CHROMA_ENV'] == 'staging'
   @auth ||=  Rack::Auth::Basic::Request.new(request.env)
   @auth.provided? and @auth.basic? and @auth.credentials and @auth.credentials == ['chromadmin', 't0ps3kr!t']
 end
