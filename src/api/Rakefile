@@ -80,12 +80,15 @@ task :build do
 
     # total up the bytes
     profile[:total] = profile.each_value.reduce :+
-    
-    puts "index => #{profile[:index]}"
+
     puts "header js => #{profile[:header_js]}"
     puts "header css => #{profile[:header_css]}"
     puts "combined => #{profile[:total]}"
     puts "gzip est => #{profile[:total] / 2}"
+
+    # move the other targets
+    FileUtils.cp_r File.join( SRC_DIR, "templates" ), TMP_DIR
+    FileUtils.cp File.join( SRC_DIR, "favicon.ico" ), TMP_DIR
     
     # clean out the target dir
     FileUtils.rm_rf TARGET_DIR
