@@ -1,17 +1,29 @@
 
-<form ng-controller="LoginController">
+<form ng-controller="LoginController" name="loginForm">
   <div class="row">
     <div class="medium-6 medium-centered columns">
       <h1>Login</h1>
-      <label for="username">E-Mail
-        <input type="email" ng-model="user.username">
+
+      <label for="username" ng-class="{error: !loginForm.email.$valid}">E-Mail
+        <input type="email" name="email" ng-model="user.username" required>
       </label>
+      <div ng-show="loginForm.$submitted || loginForm.email.$touched">
+        <small class="error" ng-show="loginForm.email.$error.required">input email address</small>
+        <small class="error" ng-show="loginForm.email.$error.email">this is not valid email</small>
+      </div>
+
       <br>
-      <label for="password">Password
-        <input type="password" ng-model="user.password">
+
+      <label for="password" ng-class="{error: !loginForm.password.$valid}">Password
+        <input type="password" ng-model="user.password" name="password" required>
       </label>
+      <div ng-show="loginForm.$submitted || loginForm.password.$touched">
+        <small class="error" ng-show="loginForm.password.$error.required">input password</small>
+      </div>
+
       <br>
-      <button ng-click="login(user)">Login</button>
+
+      <button ng-click="login(user)" ng-disabled="!loginForm.$valid">Login</button>
     </div>
   </div>
 </form>
