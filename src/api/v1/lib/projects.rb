@@ -33,7 +33,7 @@ post '/v1/projects.json' do
     pool_id = params[:pool_id]
 
     if name and description and pool_id
-      p = Project.new( name: name, user_id: @user.user_id )
+      p = Project.new( name: name, user_id: @user.user_id, pool_id: pool_id )
       p.save!
       @out = p
       return
