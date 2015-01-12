@@ -18,7 +18,7 @@ get '/v1/projects.json' do
       return
     else
       # get all the projects for the user
-      @out = Project.with_user( @user.user_id )
+      @out = Project.with_owner( @user.user_id )
       return
     end
   end

@@ -13,7 +13,7 @@ describe '/v1/projects.json' do
     @pool = valid_pool
     @pool.save
 
-    @project = Project.new(name: "herp derp", pool_id: @pool.pool_id )
+    @project = Project.new(name: "herp derp", pool_id: @pool.pool_id, user_id: "derp" )
     @project.save!
   end
 
