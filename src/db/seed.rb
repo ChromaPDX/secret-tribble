@@ -52,7 +52,7 @@ puts "\nCreated Splits:"
 end
 
 # 3: Create a new project for that pool
-@project = Project.new( name: "ABCDE Project", pool_id: @pool.pool_id )
+@project = Project.new( name: "ABCDE Project", pool_id: @pool.pool_id, user_id: @users[:peat].user_id )
 @project.save!
 
 puts "\nCreated Project:"
