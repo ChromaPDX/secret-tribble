@@ -3,6 +3,7 @@ Sequel.migration do
     App.db.run <<-eos
       CREATE TABLE projects (
         project_id VARCHAR(32) NOT NULL,
+        user_id VARCHAR(32) NOT NULL,
         pool_id VARCHAR(32) NOT NULL,
         created_at TIMESTAMP NOT NULL,
         name TEXT NOT NULL

@@ -13,7 +13,7 @@ describe Project do
   
   it "should save and load" do
     project_name = "derp"
-    project = Project.new( name: project_name )
+    project = Project.new( name: project_name, user_id: "derp" )
     project.set_pool( App.unique_id )
     expect( project.save! ).to_not be false
 
@@ -37,7 +37,7 @@ describe Project do
   end
 
   it "should convert to JSON" do
-    p1 = Project.new( name: "derpfest" )
+    p1 = Project.new( name: "derpfest", user_id: "derp" )
     p1.set_pool( App.unique_id )
     p1.save!
 
