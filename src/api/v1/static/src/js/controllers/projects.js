@@ -1,22 +1,28 @@
 app.controller("ProjectsController", ['$scope', '$projects', '$pools', function($scope, $projects, $pools) {
-  
-  $scope.splits = [];
-  $scope.pool_id = -1;
-
-  var init = function() {
-    $projects.all().then(function(data) {
-      $scope.projects = data;
-    });
-
-    initSplit();
-    $scope.currentIdx = -1;
-  }
 
   var initSplit = function() {
     $scope.split = {percent: 0};
     $scope.errors = false;
     $scope.project_errors = false;
   }
+
+  var loadProjects = function() {
+    $projects.all().then(function(data) {
+      $scope.projects = data;
+    })
+  }
+
+  var init = function() {
+    loadProjects();
+    initSplit();
+  
+    $scope.currentIdx = -1;
+    $scope.splits = [];
+    $scope.pool_id = -1;
+    $scope.project = {};
+  }
+
+  init();
 
   var splitTotal = function() {
     var total = 0;
@@ -59,7 +65,6 @@ app.controller("ProjectsController", ['$scope', '$projects', '$pools', function(
     return parsed;
   }
 
-  init();
 
   $scope.createProject = function() {
     if ($scope.pool_id === -1) {
@@ -71,7 +76,7 @@ app.controller("ProjectsController", ['$scope', '$projects', '$pools', function(
     project.pool_id = $scope.pool_id;
 
     $projects.create(project).then(function(data) {
-      console.log(data);
+      init();
     });
   }
 
