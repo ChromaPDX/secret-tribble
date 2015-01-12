@@ -12,7 +12,7 @@ STATIC_PATH = File.join( File.dirname(__FILE__), 'v1', 'static', 'public' )
 STATIC_SRC_PATH = File.join( File.dirname(__FILE__), 'v1', 'static', 'src' )
 
 set :views, VIEW_PATH
-set :public_folder, STATIC_SRC_PATH
+set :public_folder, STATIC_PATH
 
 # UTILITY METHODS ------------------------------------------------------------
 
