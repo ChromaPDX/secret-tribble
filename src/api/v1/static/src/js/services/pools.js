@@ -12,7 +12,7 @@ app.factory("$pools", ["$auth", "$state", "Restangular", function($auth, $state,
     pool.create = function(splits) {
       var restangular = Restangular.all("pools");
       return restangular.post({
-        pool: {splits: splits},
+        pool: JSON.stringify({splits: splits}),
         token_id: token
       });
     };

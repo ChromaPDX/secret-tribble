@@ -29,10 +29,14 @@ end
 post '/v1/projects.json' do
   if require_token!
     name = params[:name]
-    description = params[:description]
+    description = params[:description] # currently ignored
+    pool_id = params[:pool_id]
 
-    if name and description
+    if name and description and pool_id
       p = Project.new( name: name, user_id: @user.user_id )
+      p.save!
+      @out = p
+      return
     else
       @errors.add("A new project requires a name and description")
       return

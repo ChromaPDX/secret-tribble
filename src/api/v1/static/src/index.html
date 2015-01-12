@@ -29,8 +29,10 @@
   <script src="/js/services/auth.js" type="text/javascript"></script> <!-- #HOOVER# -->
   <script src="/js/services/projects.js" type="text/javascript"></script> <!-- #HOOVER# -->
   <script src="/js/services/pools.js" type="text/javascript"></script> <!-- #HOOVER# -->
+  <script src="/js/services/alerts.js" type="text/javascript"></script> <!-- #HOOVER# -->
 
   <!-- #HEADER# -->
+
 </head>
 
 <body ng-controller="RootController">
@@ -51,6 +53,11 @@
       </ul>
     </top-bar-section>
   </top-bar>
+
+  <!-- Alert Messages -->
+  <div class="alerts">
+    <alert ng-repeat="alert in alerts" type="alert.type" close="closeAlert($index)">{{alert.msg}}</alert>
+  </div>
 
   <!-- Body -->
   <section role="main" ui-view></section>

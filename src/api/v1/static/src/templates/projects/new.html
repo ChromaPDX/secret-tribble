@@ -4,7 +4,6 @@
   <div class="large-12 columns">
     <h3>Contributors</h3>
 
-    <div ng-show="errors">{{errors}}</div>
     <table>
       <thead>
         <tr>
@@ -22,22 +21,29 @@
             <a ng-click="removeSplit($index)" class="button tiny">Delete</a>
           </td>
         </tr>
-        <form name="splitForm">
-          <tr>
+        <tr>
+          <form name="splitForm">
             <td>
-              <input type="email" ng-model="split.email">
+              <input type="email" ng-model="split.email" name="email" ng-class="{error: splitForm.email.$invalid}" required/>
+              <div ng-show="splitForm.$submitted || splitForm.email.$touched">
+                <small class="error" ng-show="splitForm.email.$error.required">input email address</small>
+                <small class="error" ng-show="splitForm.email.$error.email">invalid email</small>
+              </div>
             </td>
             <td>
-              <input type="range" min="0" max="100" step="1" ng-model="split.percent">
+              <input type="range" min="0" max="100" step="1" ng-model="split.percent" name="percent" ng-class="{error: $splitForm.percent.$invalid}" required/>
               {{ split.percent }}%
+              <div ng-show="splitForm.$submitted || splitForm.password.$touched">
+                <small class="error" ng-show="splitForm.percent.$error.required">input percent</small>
+              </div>
             </td>
             <td>
-              <input type="button" value="Add" class="button tiny" ng-click="addSplit()" ng-hide="isEditing()"/>
-              <input type="button" value="Update" class="button tiny" ng-click="updateSplit()" ng-show="isEditing()"/>
+              <button class="tiny" ng-disabled="splitForm.$invalid" ng-click="addSplit()" ng-hide="isEditing()">Add</button>
+              <input type="button" value="Update" class="button tiny" ng-disabled="splitForm.$invalid" ng-click="updateSplit()" ng-show="isEditing()"/>
               <input type="button" value="Cancel" class="button tiny" ng-click="cancelEditing()" ng-show="isEditing()"/>
             </td>
-          </tr>
-        </form>
+          </form>
+        </tr>
       </tbody>
     </table>
 
@@ -47,24 +53,32 @@
 
 <hr>
 
-<form>
+<form name="projectForm">
   <div class="row">
-    <div class="large-12 columns" ng-show="project_errors">{{project_errors}}</div>
-
     <div class="large-12 columns">
-      <label> Project Name
-        <input type="text" placeholder="Project Name" ng-model="project.name" />
+      <label ng-class="{error: projectForm.name.$invalid}"> Project Name
+        <input type="text" placeholder="Project Name" name="name" ng-model="project.name" required/>
       </label>
+      <div ng-show="projectForm.$submitted || projectForm.password.$touched">
+        <small class="error" ng-show="projectForm.name.$error.required">input project name</small>
+      </div>
     </div>
+  </div>
 
+  <div class="row">
     <div class="large-12 columns">
-      <label> Description
-        <textarea type="text" placeholder="Description" ng-model="project.description" rows="5"></textarea>
+      <label ng-class="{error: projectForm.description.$invalid}"> Description
+        <textarea type="text" placeholder="Description" name="description" ng-model="project.description" rows="5" required></textarea>
       </label>
+      <div ng-show="projectForm.$submitted || projectForm.description.$touched">
+        <small class="error" ng-show="projectForm.description.$error.required">input project description</small>
+      </div>
     </div>
+  </div>
 
+  <div class="row">
     <div class="large-12 columns">
-      <a ng-click="createProject()" class="button radius">Create Project</a>
+      <button ng-click="createProject()" class="radius" ng-disabled="projectForm.$invalid">Create Project</button>
     </div>
   </div>
 </form>

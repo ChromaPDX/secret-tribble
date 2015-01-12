@@ -16,9 +16,8 @@ app.factory("$projects", ["$auth", "$state", "Restangular", function($auth, $sta
     };
 
     project.create = function(attrs) {
-      var restangular = Restangular.all("projects");
       attrs.token_id = token;
-      return restangular.post(attrs);
+      return Restangular.all("projects").post(attrs);
     };
 
     return project;
