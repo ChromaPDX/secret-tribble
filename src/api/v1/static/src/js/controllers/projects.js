@@ -48,6 +48,17 @@ app.controller("ProjectsController", ['$scope', '$projects', '$pools', function(
     return split;
   }
 
+  var parseSplits = function(splits) {
+    var splits = angular.copy($scope.splits);
+    var parsed = {}
+    angular.forEach(splits, function(split) {
+      split.percent = parseInt(split.percent) / 100.0;
+      parsed[split.email] = split.percent;
+    });
+
+    return parsed;
+  }
+
   init();
 
   $scope.createProject = function() {
@@ -103,8 +114,11 @@ app.controller("ProjectsController", ['$scope', '$projects', '$pools', function(
       return;
     }
 
-    $pools.create($scope.splits).then(function(data) {
+    var splits = parseSplits($scope.splits);
+
+    $pools.create(splits).then(function(data) {
       $scope.pool_id = data.pool_id;
+      console.log($scope.pool_id);
     });
   }
 }]);

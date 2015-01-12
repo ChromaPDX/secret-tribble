@@ -27,7 +27,7 @@ post '/v1/pools.json' do
   raw = JSON.parse( params[:pool] )
   d = Pool.new( raw['pool_id'] )
   raw['splits'].each do |account_id, split_pct|
-    d.split!( account_id, BigDecimal.new( split_pct ) )
+    d.split!( account_id, BigDecimal.new( split_pct.to_s ) )
   end
 
   if d.valid?
