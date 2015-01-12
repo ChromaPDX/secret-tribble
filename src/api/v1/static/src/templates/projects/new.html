@@ -23,7 +23,6 @@
         </tr>
         <tr>
           <form name="splitForm">
-            {{splitForm.$error}}
             <td>
               <input type="email" ng-model="split.email" name="email" ng-class="{error: splitForm.email.$invalid}" required/>
               <div ng-show="splitForm.$submitted || splitForm.email.$touched">
